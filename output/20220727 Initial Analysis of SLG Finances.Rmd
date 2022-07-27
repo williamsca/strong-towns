@@ -1,0 +1,67 @@
+---
+title: "Preliminary Analysis of State and Local Govt. Finances"
+author: "Colin Williams"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Table 1
+
+```{r, include = FALSE}
+rm(list = ls())
+
+dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
+setwd(dir)
+
+pacman::p_load(data.table, ggplot2, stargazer, kableExtra, knitr, texreg)
+
+outputType <- ifelse(is_html_output(), "html", "latex")
+
+dt <- readRDS("derived/County Area Infrastructure Spending (1957 - 2002).Rds")
+```
+
+```{r echo = FALSE}
+dt.summary <- dt[, .(hwy = mean(hwyOpShare, na.rm = TRUE) * 100, 
+                     sewerage = mean(sewerageOpShare, na.rm = TRUE) * 100, 
+                     sw = mean(swOpShare, na.rm = TRUE) * 100), by = .(Year4)]
+
+kable(dt.summary, digits = 2, col.names = c("Year", "Regular Highways (%)", "Sewerage (%)", "Solid Waste (%)"), caption = "Operating Costs as a % of All Direct Expenditures (Average by County Area)") %>% kable_classic()
+```
+
+# Table 2
+
+```{r echo = FALSE}
+# Regular highways
+lagHWCapOut <- paste0("L_HWCapOut_", seq(5,25,5))
+dt[, (lagHWCapOut) := shift(Regular.Hwy.Cap.Outlay, n = seq(1,6,1), type = "lag"), by = .(ID)] # create fields with lagged capital outlays
+dt[, (lagHWCapOut) := lapply(.SD + 1, log), .SDcols = lagHWCapOut]
+
+fmla <- as.formula(paste("log(Regular.Hwy.Cur.Oper..E44. + 1) ~ ID + ", paste(lagHWCapOut, collapse = " + ")))
+lm.hwy <- lm(fmla, data = dt)
+
+# Sewerage
+lagSEWCapOut <- paste0("L_SEWCapOut_", seq(5,25,5))
+dt[, (lagSEWCapOut) := shift(Sewerage.Cap.Outlay, n = seq(1,6,1), type = "lag"), by = .(ID)]
+dt[, (lagSEWCapOut) := lapply(.SD + 1, log), .SDcols = lagSEWCapOut]
+
+fmla <- as.formula(paste("log(Sewerage.Current.Oper..E80. + 1) ~ ID + ", paste(lagSEWCapOut, collapse = " + ")))
+lm.sew <- lm(fmla, data = dt)
+
+```
+
+The regression equation is $$\ln(OP_{i,t}) = \alpha + \beta_i + \sum_{k=5}^{25} \delta_k\ln(CAP_{i,t-k})$$
+
+where $OP_{it}$ is the operating expenditure in county $i$ at time $t$ and $CAP_{i,t-k}$ is the capital outlay in that county at time $t-k$.
+
+```{r table, results = "asis", echo = FALSE}
+covlabs.hw <- paste0("Log highway capital outlays t-", seq(5, 25, 5))
+covlabs.sew <- paste0("Log sewerage capital outlays t-", seq(5,25,5))
+stargazer(lm.hwy, lm.sew, type = outputType, omit = c("ID"), 
+          omit.labels = c("County FEs"), 
+          title = "Relationship between Historical Capital Outlays and Current Operating Expenses",
+          dep.var.caption = c("Dependent variable: Log current operations expenditure at t"), 
+          column.labels = c("Regular Highways", "Sewerage"), 
+          dep.var.labels = c("", ""),
+          covariate.labels = c(covlabs.hw, covlabs.sew)) 
+```

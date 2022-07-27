@@ -1,0 +1,17 @@
+#+title: Project Notebook
+#+author: Colin Williams
+
+* Useful Links
+
+Annual Survey of State and Local Governments (ASSLG) Data
+- Recent: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
+- Historical: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
+
+Item code aggregations and manual: 
+- https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html
+
+Roadway map parser: 
+- https://github.com/johannesuhl/hironex
+
+  
+* Data Build Methodology  
