@@ -46,6 +46,7 @@ dt.countyexpB[,`:=`(sewerageOpShare = Sewerage.Current.Oper..E80. / Sewerage.Dir
 dt.infrastructure <- merge(dt.countyexpA[, .(Year4, ID, hwyOpShare, Regular.Hwy.Cur.Oper..E44., Regular.Hwy.Direct.Exp, Regular.Hwy.Cap.Outlay)], 
                            dt.countyexpB[, .(Year4, ID, sewerageOpShare, swOpShare, Sewerage.Current.Oper..E80., Sewerage.Cap.Outlay, Sewerage.Direct.Expend,
                                             SW.Mgmt.Current.Oper..E81., SW.Mgmt.Direct.Expend, SW.Mgmt.Capital.Outlay)], by = c("Year4", "ID"))
+dt.infrastructure <- merge(dt.infrastructure, dt.countyrev[, .(Year4, ID, FIPS.Code.State, FIPS.Code.County)], by = c("Year4", "ID"))
 
 min(between(dt.infrastructure[, hwyOpShare], 0, 1), na.rm = TRUE) # 1 --> operating expenses as a fraction of all direct expenditures is on the interval [0,1]
 min(between(dt.infrastructure[, sewerageOpShare], 0, 1), na.rm = TRUE)
@@ -58,6 +59,9 @@ dt.infrastructure[, (colsB) := lapply(.SD, "/", Annual / 100), .SDcols = colsB]
 
 ids <- c("Year4", "ID")
 dt.infrastructure[, (ids) := lapply(.SD, factor), .SDcols = ids]
+
+summary(dt.infrastructure[, Sewerage.Current.Oper..E80. + Sewerage.Cap.Outlay - Sewerage.Direct.Expend]) # verify that operations plus capital outlay equal direct expenditures
+summary(dt.infrastructure[, Regular.Hwy.Cur.Oper..E44. + Regular.Hwy.Cap.Outlay - Regular.Hwy.Direct.Exp])
 
 saveRDS(dt.infrastructure, file = "derived/County Area Infrastructure Spending (1957 - 2002).Rds")
 
