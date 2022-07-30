@@ -17,9 +17,16 @@ uniqueN(dt.countyrev, by = c("Year4", "ID")) == nrow(dt.countyrev) # TRUE --> an
 uniqueN(dt.countyexpA, by = c("Year4", "ID")) == nrow(dt.countyexpA)
 uniqueN(dt.countyexpB, by = c("Year4", "ID")) == nrow(dt.countyexpB)
 
+dt.07 <- fread("data/Historical_Finance_Data/County_Area_Finances_2007/County_Area_Finances_2007.txt")
+dt.07[, Year4 := 2007]
+dt.12 <- fread("data/Historical_Finance_Data/County_Area_Finances_2012/County_Area_Finances_2012.txt")
+dt.12[, Year4 := 2012]
+dt.712 <- rbindlist(list(dt.07, dt.12))
+
 saveRDS(dt.countyexpA, file = "derived/County Area Expenditures A (1957-2002).Rds")
 saveRDS(dt.countyrev, file = "derived/County Area Revenues (1957-2002).Rds")
 saveRDS(dt.countyexpB, file = "derived/County Area Expenditures B (1957-2002).Rds")
+saveRDS(dt.712, file = "derived/County Area Finances (2007-2012).Rds")
 
 dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220726093626_570e10.xlsx", skip = 11))
 
@@ -30,6 +37,7 @@ dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220726093626_570e10.xlsx"
 # saveRDS(dt.county, file = "derived/County Govt Finances (1957-2006)")
 
 # Regression databuild ----
+# TODO: merge in 2007 and 2012 data
 isGe0 <- function(x) {
   return(ifelse(x >= 0, x, NA))
 }

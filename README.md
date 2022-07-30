@@ -3,7 +3,8 @@
 Document the relationship between local government finances and the proliferation of suburbs.
 
 ## TODO
-- Address variation in county areas
+- Address variation in county areas over time
+- Merge in 2007 and 2012 expenditure data
 - Obtain panel of historic roadway maps
 - Merge historic ASSLG finance data with contemporary surveys
 
