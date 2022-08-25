@@ -1,0 +1,14 @@
+\begin{thebibliography}{1}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Brueckner(2000)]{brueckner2000urban}
+Jan~K Brueckner.
+\newblock Urban sprawl: Diagnosis and remedies.
+\newblock \emph{International regional science review}, 23\penalty0
+  (2):\penalty0 160--171, 2000.
+
+\end{thebibliography}

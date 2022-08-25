@@ -10,6 +10,7 @@
 \usepackage{float}
 \usepackage{subfig}
 \usepackage{pdflscape}
+\usepackage{natbib}
 \usepackage{booktabs}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.14}
@@ -17,7 +18,7 @@
 \usepackage[labelsep=period]{caption} %% This switches "Table 1: Title" to "Table 1. Title"
 
 \usepackage{amssymb} %% Necessary, just for the \checkmark command  in tables.
-\usepackage{multirow} %% Necessary if we are doing tables in LaTeX
+% \usepackage{multirow} %% Necessary if we are doing tables in LaTeX
 
 \usepackage{xr}
 
@@ -58,7 +59,7 @@ University. \href{mailto:TK@TK.edu}{TK@TK.edu}}}
 
 
 \begin{abstract}
-    \noindent Local officials choose if and how to permit new development. We argue that the structure of federal infrastructure grants, which typically cover a share of a project’s up-front costs, allows myopic officials to raise tax revenues in the present while deferring maintenance costs to their successors. Officials can maximize immediate revenues by approving low-density expansion. Consistent with this mechanism, we find evidence that cities constrained by political or topographical boundaries have higher tax rates and higher municipal debt.
+    \noindent Local officials choose if and how to permit new development. We argue that the nature of infrastructure costs, which require an initial outlay and only limited maintenance expenses for several decades, allows myopic local officials to raise tax revenues in the present while deferring replacement costs to their successors. Officials can maximize immediate revenues by approving low-density expansion. Consistent with this mechanism, we find evidence that cities constrained by political or topographical boundaries have higher tax rates and higher municipal debt.
 \end{abstract}
 \end{singlespace}
 \thispagestyle{empty}
@@ -80,6 +81,11 @@ University. \href{mailto:TK@TK.edu}{TK@TK.edu}}}
 % empirical results in Section \ref{sec:results}. Finally, Section \ref{sec:conclusion} concludes. 
 
 \section{Background \label{sec:background}}
+
+The costs of new infrastructure rarely fall directly on users. As noted by \citet{brueckner2000urban}, new roads and sewers are typically financed by taxes on all city residents rather than being paid by those living in the development which occasioned the expense. In effect, taxpayers pay the average cost of infrastructure across the city rather than the marginal cost of their use. This market failure results in overly large cities.
+
+Our argument is slightly different: rather than passing the cost of new infrastructure onto current residents, officials exploit non-linear maintenance schedules to push the costs onto subsequent generations.
+
 
 
 \section{Results \label{sec:results}}
