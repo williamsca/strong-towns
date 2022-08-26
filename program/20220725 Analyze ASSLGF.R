@@ -9,7 +9,7 @@ setwd(dir)
 
 pacman::p_load(data.table, ggplot2, stargazer)
 
-dt <- readRDS("derived/County Area Infrastructure Spending (1957 - 2002).Rds")
+dt <- readRDS("derived/County Area Infrastructure Spending (1957 - 2012).Rds")
 
 # Predicting future operating costs given current capital outlays ----
 
