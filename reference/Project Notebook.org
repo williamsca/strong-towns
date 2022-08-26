@@ -14,4 +14,12 @@ Roadway map parser:
 - https://github.com/johannesuhl/hironex
 
   
-* Data Build Methodology  
+* Data Notes
+
+** Annual Survey of State and Local Government (ASSLG)
+
+** Data from: A century of sprawl in the United States
+
+Link: https://datadryad.org/stash/dataset/doi:10.5061/dryad.3k502
+
+
