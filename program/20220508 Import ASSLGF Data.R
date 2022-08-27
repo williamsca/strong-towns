@@ -10,7 +10,7 @@ pacman::p_load(data.table, readr, readxl)
 
 # Finance Data (2009-2019) ----
 # TODO: add years
-df.raw <- readr::read_fwf(file = "data/Contemporary_Finance_Data/2019_individual_unit_file/2019FinEstDAT_06102021modp_pu.txt",
+df.raw <- readr::read_fwf(file = "data/Contemporary_Finance_Data/2017_Individual_Unit_File/2017FinEstDAT_06102021modp_pu.txt",
                              fwf_widths(c(2, 1, 3, 6, 3, 12, 4, 1),
                                         c("FIPS State", "Type", "FIPS County", "Unit", "Item", "Amount", "Year", "Flag")))
 
