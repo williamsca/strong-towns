@@ -54,7 +54,7 @@ dt.infrastructure <- merge(dt.countyexpA[, .(Year4, ID, hwyOpShare, Regular.Hwy.
                            by = c("Year4", "ID"))
 
  # merge in FIPS codes, revenues
-dt.infrastructure <- merge(dt.infrastructure, dt.countyrev[, .(Year4, ID, Total.Taxes)], by = c("Year4", "ID"))
+dt.infrastructure <- merge(dt.infrastructure, dt.countyrev[, .(Year4, ID, Total.Taxes, Population)], by = c("Year4", "ID"))
 
 dt.infrastructure[, (c("Year4", "ID", "Total.Taxes")) := lapply(.SD, as.numeric), .SDcols = c("Year4", "ID", "Total.Taxes")]
 

@@ -18,8 +18,19 @@ uniqueN(dt.countyexpA, by = c("Year4", "ID")) == nrow(dt.countyexpA)
 uniqueN(dt.countyexpB, by = c("Year4", "ID")) == nrow(dt.countyexpB)
 
 dt.07 <- fread("data/Historical_Finance_Data/County_Area_Finances_2007/County_Area_Finances_2007.txt")
+dt.07pop <- read_xlsx("data/Historical_Finance_Data/County_Area_Finances_2007/County_Area_Finances_2007_updated.xlsx",
+                     sheet = "County_ID_Lookup")
+dt.07pop$ID <- as.numeric(dt.07pop$ID)
+dt.07pop$Population <- dt.07pop$`Population as of July 1, 2006 (2000-2010 Intercensal Est.)`
+dt.07 <- merge(dt.07, subset(dt.07pop, select = c("ID", "Population")), by = "ID")
 dt.07[, Year4 := 2007]
+
 dt.12 <- fread("data/Historical_Finance_Data/County_Area_Finances_2012/County_Area_Finances_2012.txt")
+dt.12pop <- read_xlsx("data/Historical_Finance_Data/County_Area_Finances_2012/County_Area_Finances_2012.xlsx",
+                      sheet = "County_ID_Lookup")
+dt.12pop$ID <- as.numeric(dt.12pop$ID)
+dt.12pop$Population <- dt.12pop$`Population as of July 1, 2011 (Vintage 2013)`
+dt.12 <- merge(dt.12, subset(dt.12pop, select = c("ID", "Population")), by = "ID")
 dt.12[, Year4 := 2012]
 dt.712 <- rbindlist(list(dt.07, dt.12))
 
