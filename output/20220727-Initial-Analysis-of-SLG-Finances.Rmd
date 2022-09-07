@@ -1,0 +1,88 @@
+---
+title: "Preliminary Analysis of State and Local Govt. Finances"
+author: "Colin Williams"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Table 1
+
+```{r, include = FALSE}
+rm(list = ls())
+
+dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
+setwd(dir)
+
+pacman::p_load(data.table, ggplot2, stargazer, kable, knitr, texreg)
+
+outputType <- ifelse(is_html_output(), "html", "latex")
+
+dt <- readRDS("derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds")
+```
+
+```{r echo = FALSE}
+dt.summary <- dt[, .(hwy = mean(hwyOpShare, na.rm = TRUE) * 100, 
+                     sewerage = mean(sewerageOpShare, na.rm = TRUE) * 100), 
+                     by = .(Year4)]
+
+kable(dt.summary, digits = 2, col.names = c("Year", "Regular Highways (%)", "Sewerage (%)"), caption = "Operating Costs as a % of All Direct Expenditures (Average by County Area)")
+```
+
+# Table 2
+
+```{r echo = FALSE}
+# Regular highways
+lagHWCapOut <- paste0("L_HWCapOut_", seq(5,30,5))
+dt[, (lagHWCapOut) := shift(Regular.Hwy.Cap.Outlay, n = seq(1,7,1), type = "lag"), by = .(ID)] # create fields with lagged capital outlays
+dt[, (lagHWCapOut) := lapply(.SD + 1, log), .SDcols = lagHWCapOut]
+
+fmla <- as.formula(paste("log(Regular.Hwy.Cur.Oper..E44. + 1) ~ ID + ", paste(lagHWCapOut, collapse = " + ")))
+lm.hwy <- lm(fmla, data = dt)
+
+# Sewerage
+lagSEWCapOut <- paste0("L_SEWCapOut_", seq(5,30,5))
+dt[, (lagSEWCapOut) := shift(Sewerage.Cap.Outlay, n = seq(1,7,1), type = "lag"), by = .(ID)]
+dt[, (lagSEWCapOut) := lapply(.SD + 1, log), .SDcols = lagSEWCapOut]
+
+fmla <- as.formula(paste("log(Sewerage.Current.Oper..E80. + 1) ~ ID + ", paste(lagSEWCapOut, collapse = " + ")))
+lm.sew <- lm(fmla, data = dt)
+
+```
+
+The regression equation is $$\ln(OP_{i,t} + 1) = \alpha + \beta_i + \sum_{k=5}^{30} \delta_k\ln(CAP_{i,t-k} + 1)$$
+
+where $OP_{it}$ is the operating expenditure in county $i$ at time $t$ and $CAP_{i,t-k}$ is the capital outlay in that county at time $t-k$.
+
+```{r table, results = "asis", echo = FALSE}
+covlabs.hw <- paste0("Log highway capital outlays t-", seq(5, 30, 5))
+covlabs.sew <- paste0("Log sewerage capital outlays t-", seq(5,30,5))
+stargazer(lm.hwy, lm.sew, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Operating Expenses",
+          dep.var.caption = c("Dependent variable: Log current operations expenditure at t"), 
+          column.labels = c("Regular Highways", "Sewerage"), 
+          dep.var.labels = c("", ""),
+          covariate.labels = c(covlabs.hw, covlabs.sew)) 
+
+```
+
+## Table 3
+
+The regression equation is $$\ln(TAX_{i,t} + 1) = \alpha + \beta_i + \sum_{k=5}^{30} \delta_k\ln(CAP_{i,t-k}+1)$$
+
+```{r echo = FALSE}
+lagINFCapOut <- paste0("L_INFCapOut_", seq(5,30,5))
+dt[, INFCapOut := Sewerage.Cap.Outlay + Regular.Hwy.Cap.Outlay]
+
+dt[, (lagINFCapOut) := shift(INFCapOut, n = seq(1,7,1), type = "lag"), by = .(ID)]
+dt[, (lagINFCapOut) := lapply(.SD + 1, log), .SDcols = lagINFCapOut]
+
+fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + ", paste(lagINFCapOut, collapse = " + ")))
+lm.tax <- lm(fmla, data = dt)
+```
+
+```{r table3, results = "asis", echo = FALSE}
+covlabs <- paste0("Log(1 + highway + sewerage capital outlays) at t-", seq(5,30,5))
+stargazer(lm.tax, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Taxes",
+          dep.var.caption = c("Dependent variable: Log(Total Taxes + 1)"),
+          covariate.labels = covlabs)
+```

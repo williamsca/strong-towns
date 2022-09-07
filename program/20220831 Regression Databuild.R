@@ -77,3 +77,4 @@ summary(dt.infrastructure[, Sewerage.Current.Oper..E80. + Sewerage.Cap.Outlay - 
 summary(dt.infrastructure[, Regular.Hwy.Cur.Oper..E44. + Regular.Hwy.Cap.Outlay - Regular.Hwy.Direct.Exp])
 
 saveRDS(dt.infrastructure, file = "derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds")
+
