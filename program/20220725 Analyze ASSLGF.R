@@ -11,6 +11,7 @@ pacman::p_load(data.table, ggplot2, stargazer)
 
 dt <- readRDS("derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds")
 
+# TODO: add contemporary capital outlays
 # Predicting current operating costs given historical capital outlays ----
 
 # Regular highways
@@ -40,6 +41,7 @@ stargazer(lm.hwy, lm.sew, type = "text", omit = c("ID"), title = "Relationship b
 # Predicting current taxes given historical capital outlays ----
 lagINFCapOut <- paste0("L_INFCapOut_", seq(5,30,5))
 dt[, INFCapOut := Sewerage.Cap.Outlay + Regular.Hwy.Cap.Outlay]
+dt[, perCapTax := Total.Taxes / Population]
 
 dt[, (lagINFCapOut) := shift(INFCapOut, n = seq(1,7,1), type = "lag"), by = .(ID)]
 dt[, (lagINFCapOut) := lapply(.SD + 1, log), .SDcols = lagINFCapOut]
@@ -47,9 +49,13 @@ dt[, (lagINFCapOut) := lapply(.SD + 1, log), .SDcols = lagINFCapOut]
 fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + ", paste(lagINFCapOut, collapse = " + ")))
 lm.tax <- lm(fmla, data = dt)
 
+fmla <- as.formula(paste("log(perCapTax + 1) ~ ID + ", paste(lagINFCapOut, collapse = " + ")))
+lm.taxpcap <- lm(fmla, data = dt)
+
 covlabs <- paste0("Log(1 + highway + sewerage capital outlays) at t-", seq(5,30,5))
-stargazer(lm.tax, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Taxes",
+stargazer(lm.tax, lm.taxpcap, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Taxes",
           dep.var.caption = c("Dependent variable: Log(Total Taxes + 1)"),
+          column.labels = c("Total Taxes", "Per-Capita Taxes"),
           covariate.labels = covlabs)
 
 

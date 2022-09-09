@@ -11,7 +11,8 @@ dt.countyrev <- readRDS(file = "derived/County Area Revenues (1957-2002).Rds")
 dt.countyexpB <- readRDS(file = "derived/County Area Expenditures B (1957-2002).Rds")
 dt.712 <- readRDS(file = "derived/County Area Finances (2007-2012).Rds")
 
-dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220826125340_41f8ee.xlsx", skip = 11))
+# dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220826125340_41f8ee.xlsx", skip = 11))
+dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220726093626_570e10.xlsx", skip = 11)) # TODO: harmonize CPI data...
 
 # Regression databuild ----
 # Expenditures: 2007 and 2012
@@ -21,9 +22,10 @@ dt.712 <- dt.712[(Code %in% codes | grepl("T..", Code)) & ID != 0] # filter to h
 
 # roll up taxes
 dt.712[grepl("T..", Code), Code := "Total.Taxes"]
-dt.712 <- dt.712[, sum(Amt), by = c("ID", "Year4", "Code")]
+dt.712 <- dt.712[, sum(Amt), by = c("ID", "Year4", "Code", "Population")]
+dt.712[, Population := as.numeric(Population)]
 
-dt.712 <- dcast(dt.712, ID + Year4 ~ Code, value.var = c("V1"), fill = 0)
+dt.712 <- dcast(dt.712, ID + Year4 + Population ~ Code, value.var = c("V1"), fill = 0)
 
 dt.712[, Regular.Hwy.Direct.Exp := E44 + F44 + G44][, Sewerage.Direct.Expend := E80 + F80 + G80]
 dt.712[, Regular.Hwy.Cap.Outlay := F44 + G44][, Sewerage.Cap.Outlay := F80 + G80]
@@ -53,10 +55,10 @@ dt.infrastructure <- merge(dt.countyexpA[, .(Year4, ID, hwyOpShare, Regular.Hwy.
                                              Water.Util.Cur.Oper..E91., Water.Util.Cap.Outlay, Water.Util.Total.Exp)], 
                            by = c("Year4", "ID"))
 
- # merge in FIPS codes, revenues
+ # merge in tax revenues, population
 dt.infrastructure <- merge(dt.infrastructure, dt.countyrev[, .(Year4, ID, Total.Taxes, Population)], by = c("Year4", "ID"))
 
-dt.infrastructure[, (c("Year4", "ID", "Total.Taxes")) := lapply(.SD, as.numeric), .SDcols = c("Year4", "ID", "Total.Taxes")]
+dt.infrastructure[, (c("Year4", "ID", "Total.Taxes", "Population")) := lapply(.SD, as.numeric), .SDcols = c("Year4", "ID", "Total.Taxes", "Population")]
 
 # append 2007/2012 data
 dt.infrastructure <- rbindlist(list(dt.infrastructure, dt.712), use.names = TRUE)
