@@ -2,6 +2,9 @@
 # Author: Colin Williams
 # Last Update: 7/25/2022
 
+# TODO: try with state X year trends
+# TODO: fix tax regressions
+
 rm(list = ls())
 
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
@@ -9,34 +12,70 @@ setwd(dir)
 
 pacman::p_load(data.table, ggplot2, stargazer)
 
-dt <- readRDS("derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds")
+dt <- readRDS("derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds") 
 
-# TODO: add contemporary capital outlays
-# Predicting current operating costs given historical capital outlays ----
+# Trends in direct infrastructure expenditures ----
+dt.tot <- dt[, .(`Regular Highways` = sum(Regular.Hwy.Direct.Exp), Sewerage = sum(Sewerage.Direct.Expend), `Water Utilities` = sum(Water.Util.Total.Exp)),
+                 by = .(Year = Year4)]
+dt.tot <- melt(dt.tot, id.vars = c("Year"), variable.name = "Infrastructure Type", value.name = "Direct Expenditures")
+ggplot(dt.tot, aes(x = Year, y = `Direct Expenditures`, group = `Infrastructure Type`, color = `Infrastructure Type`)) +
+  geom_point() +
+  geom_line(linetype = "dashed") +
+  labs(title = "Total Local Government Infrastructure Spending",
+       subtitle = "1957 - 2012", y = "Direct Expenditures ($1000s)",
+       caption = "Source: Annual Survey of State and Local Governments")
 
+# Predicting current expenditures given historical capital outlays ----
 # Regular highways
 lagHWCapOut <- paste0("L_HWCapOut_", seq(5,30,5))
 dt[, (lagHWCapOut) := shift(Regular.Hwy.Cap.Outlay, n = seq(1,7,1), type = "lag"), by = .(ID)] # create fields with lagged capital outlays
 dt[, (lagHWCapOut) := lapply(.SD + 1, log), .SDcols = lagHWCapOut]
 
-fmla <- as.formula(paste("log(Regular.Hwy.Cur.Oper..E44. + 1) ~ ID + ", paste(lagHWCapOut, collapse = " + ")))
-lm.hwy <- lm(fmla, data = dt)
+RHS <- paste("ID + Year4 + ", paste(lagHWCapOut, collapse = " + "), sep = "")
+
+fmla <- as.formula(paste0("log(Regular.Hwy.Direct.Exp + 1) ~ ", RHS))
+lm.hwyExp <- lm(fmla, data = dt)
+
+fmla <- as.formula(paste0("log(Regular.Hwy.Cur.Oper..E44. + 1) ~ ", RHS))
+lm.hwyOper <- lm(fmla, data = dt)
+
+fmla <- as.formula(paste0("log(Regular.Hwy.Cap.Outlay + 1) ~ ", RHS))
+lm.hwyCap <- lm(fmla, data = dt)
+
+covlabs.hw <- paste0("Log(capital outlays + 1) at t-", seq(5, 30, 5))
+stargazer(lm.hwyExp, lm.hwyOper, lm.hwyCap, type = "text", omit = c("ID", "Year4"), title = "Highways: Historical Capital Outlays and Contemporary Expenditures",
+          dep.var.caption = c("Dependent variable:"),
+          column.labels = c("log(Total Expenditures + 1)", "log(Current Operations + 1)", "log(Capital Outlays + 1)"),
+          dep.var.labels.include = FALSE,
+          omit.labels = c("County FEs", "Year FEs"),
+          covariate.labels = c(covlabs.hw))
 
 # Sewerage
 lagSEWCapOut <- paste0("L_SEWCapOut_", seq(5,30,5))
 dt[, (lagSEWCapOut) := shift(Sewerage.Cap.Outlay, n = seq(1,7,1), type = "lag"), by = .(ID)]
 dt[, (lagSEWCapOut) := lapply(.SD + 1, log), .SDcols = lagSEWCapOut]
 
-fmla <- as.formula(paste("log(Sewerage.Current.Oper..E80. + 1) ~ ID + ", paste(lagSEWCapOut, collapse = " + ")))
-lm.sew <- lm(fmla, data = dt)
+RHS <- paste("ID + Year4 + ", paste(lagSEWCapOut, collapse = " + "), sep = "")
 
-covlabs.hw <- paste0("Log highway capital outlays t-", seq(5, 30, 5))
-covlabs.sew <- paste0("Log sewerage capital outlays t-", seq(5,30,5))
-stargazer(lm.hwy, lm.sew, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Operating Expenses",
-          dep.var.caption = c("Dependent variable: Log current operations expenditure at t"), 
-          column.labels = c("Regular Highways", "Sewerage"), 
-          dep.var.labels = c("", ""),
-          covariate.labels = c(covlabs.hw, covlabs.sew)) 
+fmla <- as.formula(paste0("log(Sewerage.Direct.Expend + 1) ~ ", RHS))
+lm.sewExp <- lm(fmla, data = dt)
+
+fmla <- as.formula(paste0("log(Sewerage.Current.Oper..E80. + 1) ~ ", RHS))
+lm.sewOper <- lm(fmla, data = dt)
+
+fmla <- as.formula(paste0("log(Sewerage.Cap.Outlay + 1) ~ ", RHS))
+lm.sewCap <- lm(fmla, data = dt)
+
+covlabs.hw <- paste0("Log(capital outlays + 1) at t-", seq(5, 30, 5))
+stargazer(lm.sewExp, lm.sewOper, lm.sewCap, type = "text", omit = c("ID", "Year4"), title = "Sewerage: Historical Capital Outlays and Contemporary Expenditures",
+          dep.var.caption = c("Dependent variable:"),
+          column.labels = c("log(Total Expenditures + 1)", "log(Current Operations + 1)", "log(Capital Outlays + 1)"),
+          dep.var.labels.include = FALSE,
+          omit.labels = c("County FEs", "Year FEs"),
+          covariate.labels = c(covlabs.hw))
+
+# TODO: Water Utilities
+
 
 # Predicting current taxes given historical capital outlays ----
 lagINFCapOut <- paste0("L_INFCapOut_", seq(5,30,5))
@@ -46,17 +85,17 @@ dt[, perCapTax := Total.Taxes / Population]
 dt[, (lagINFCapOut) := shift(INFCapOut, n = seq(1,7,1), type = "lag"), by = .(ID)]
 dt[, (lagINFCapOut) := lapply(.SD + 1, log), .SDcols = lagINFCapOut]
 
-fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + ", paste(lagINFCapOut, collapse = " + ")))
+fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + Year4 + ", paste(lagINFCapOut, collapse = " + ")))
 lm.tax <- lm(fmla, data = dt)
 
-fmla <- as.formula(paste("log(perCapTax + 1) ~ ID + ", paste(lagINFCapOut, collapse = " + ")))
+fmla <- as.formula(paste("log(perCapTax + 1) ~ ID + Year4 + ", paste(lagINFCapOut, collapse = " + ")))
 lm.taxpcap <- lm(fmla, data = dt)
 
-covlabs <- paste0("Log(1 + highway + sewerage capital outlays) at t-", seq(5,30,5))
+covlabs <- paste0("Log(1 + infrastructure capital outlays) at t-", seq(5,30,5))
 stargazer(lm.tax, lm.taxpcap, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Taxes",
           dep.var.caption = c("Dependent variable: Log(Total Taxes + 1)"),
-          column.labels = c("Total Taxes", "Per-Capita Taxes"),
-          covariate.labels = covlabs)
+          column.labels = c("Total Taxes", "Per-Capita Taxes"), # covariate.labels = covlabs,
+          note = "Infrastructure is defined here to consist of regular highways and sewerage.")
 
 
 

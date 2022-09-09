@@ -11,8 +11,7 @@ dt.countyrev <- readRDS(file = "derived/County Area Revenues (1957-2002).Rds")
 dt.countyexpB <- readRDS(file = "derived/County Area Expenditures B (1957-2002).Rds")
 dt.712 <- readRDS(file = "derived/County Area Finances (2007-2012).Rds")
 
-# dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220826125340_41f8ee.xlsx", skip = 11))
-dt.cpi <- as.data.table(read_xlsx("data/SeriesReport-20220726093626_570e10.xlsx", skip = 11)) # TODO: harmonize CPI data...
+dt.cpi <- as.data.table(read_xlsx("crosswalks/CPI-U 1967 Dollars (1957-2022).xlsx", skip = 11)) 
 
 # Regression databuild ----
 # Expenditures: 2007 and 2012
