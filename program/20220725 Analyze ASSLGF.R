@@ -2,9 +2,6 @@
 # Author: Colin Williams
 # Last Update: 7/25/2022
 
-# TODO: try with state X year trends
-# TODO: fix tax regressions
-
 rm(list = ls())
 
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
@@ -85,17 +82,23 @@ dt[, perCapTax := Total.Taxes / Population]
 dt[, (lagINFCapOut) := shift(INFCapOut, n = seq(1,7,1), type = "lag"), by = .(ID)]
 dt[, (lagINFCapOut) := lapply(.SD + 1, log), .SDcols = lagINFCapOut]
 
-fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + Year4 + ", paste(lagINFCapOut, collapse = " + ")))
+fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + ")))
 lm.tax <- lm(fmla, data = dt)
 
-fmla <- as.formula(paste("log(perCapTax + 1) ~ ID + Year4 + ", paste(lagINFCapOut, collapse = " + ")))
+fmla <- as.formula(paste("log(perCapTax + 1) ~ ID + Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + ")))
 lm.taxpcap <- lm(fmla, data = dt)
 
-covlabs <- paste0("Log(1 + infrastructure capital outlays) at t-", seq(5,30,5))
-stargazer(lm.tax, lm.taxpcap, type = "text", omit = c("ID"), title = "Relationship between Historical Capital Outlays and Current Taxes",
+fmla <- as.formula(paste("log(Population) ~ ID + Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + ")))
+lm.pop <- lm(fmla, data = dt)
+
+covlabs <- paste0("Log(1 + infrastructure capital outlays) at t-", seq(0,30,5))
+stargazer(lm.tax, lm.taxpcap, lm.pop, type = "text", omit = c("ID", "Year4"), title = "Relationship between Historical Capital Outlays and Current Taxes",
           dep.var.caption = c("Dependent variable: Log(Total Taxes + 1)"),
-          column.labels = c("Total Taxes", "Per-Capita Taxes"), # covariate.labels = covlabs,
+          column.labels = c("Total Taxes", "Per-Capita Taxes"), 
+          covariate.labels = covlabs,
+          omit.labels = c("County FEs", "Year FEs"),
           note = "Infrastructure is defined here to consist of regular highways and sewerage.")
+
 
 
 
