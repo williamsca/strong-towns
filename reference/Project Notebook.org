@@ -2,7 +2,18 @@
 #+author: Colin Williams
 
 * Useful Links
+Road maintenance schedules for IL have spikes at 15 and 30 years:
+- https://idot.illinois.gov/doing-business/procurements/engineering-architectural-professional-services/Consultants-Resources/Pavement-Design-Processes
 
+Financial plans for VA highway projects:
+- https://www.virginiadot.org/projects/financial_plans.asp
+- Revenue-sharing code: https://law.lis.virginia.gov/vacode/title33.2/chapter3/section33.2-357/
+
+
+  
+* Data Notes
+
+** Annual Survey of State and Local Government (ASSLG)
 Annual Survey of State and Local Governments (ASSLG) Data
 - Recent: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
 - Historical: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
@@ -10,13 +21,6 @@ Annual Survey of State and Local Governments (ASSLG) Data
 Item code aggregations and manual: 
 - https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html
 
-Roadway map parser: 
-- https://github.com/johannesuhl/hironex
-
-  
-* Data Notes
-
-** Annual Survey of State and Local Government (ASSLG)
 
 ** Data from: A century of sprawl in the United States
 
