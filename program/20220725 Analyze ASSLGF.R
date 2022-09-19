@@ -2,6 +2,8 @@
 # Author: Colin Williams
 # Last Update: 7/25/2022
 
+# TODO: add state to databuild; use state-by-year FEs
+
 rm(list = ls())
 
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))

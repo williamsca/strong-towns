@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-07-21 Thu 12:49 -->
+<!-- 2022-09-18 Sun 07:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Project Notebook</title>
@@ -161,6 +161,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -185,7 +198,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -234,30 +247,69 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0af54cb">1. Useful Links</a></li>
-<li><a href="#org5ae3646">2. Data Build Methodology</a></li>
+<li><a href="#org2b3cfcf">1. Useful Links</a></li>
+<li><a href="#org68e489c">2. Data Notes</a>
+<ul>
+<li><a href="#orged1f5d5">2.1. Annual Survey of State and Local Government (ASSLG)</a></li>
+<li><a href="#orgd5d2a58">2.2. Data from: A century of sprawl in the United States</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0af54cb" class="outline-2">
-<h2 id="org0af54cb"><span class="section-number-2">1</span> Useful Links</h2>
+<div id="outline-container-org2b3cfcf" class="outline-2">
+<h2 id="org2b3cfcf"><span class="section-number-2">1</span> Useful Links</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+Road maintenance schedules for IL have spikes at 15 and 30 years:
+</p>
 <ul class="org-ul">
-<li>Finance data: <a href="https://www.census.gov/programs-surveys/gov-finances/data/datasets.html">https://www.census.gov/programs-surveys/gov-finances/data/datasets.html</a></li>
-<li>Item code aggregations and manual: <a href="https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html">https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html</a></li>
+<li><a href="https://idot.illinois.gov/doing-business/procurements/engineering-architectural-professional-services/Consultants-Resources/Pavement-Design-Processes">https://idot.illinois.gov/doing-business/procurements/engineering-architectural-professional-services/Consultants-Resources/Pavement-Design-Processes</a></li>
 </ul>
 </div>
 </div>
 
 
-<div id="outline-container-org5ae3646" class="outline-2">
-<h2 id="org5ae3646"><span class="section-number-2">2</span> Data Build Methodology</h2>
+
+<div id="outline-container-org68e489c" class="outline-2">
+<h2 id="org68e489c"><span class="section-number-2">2</span> Data Notes</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orged1f5d5" class="outline-3">
+<h3 id="orged1f5d5"><span class="section-number-3">2.1</span> Annual Survey of State and Local Government (ASSLG)</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Annual Survey of State and Local Governments (ASSLG) Data
+</p>
+<ul class="org-ul">
+<li>Recent: <a href="https://www.census.gov/programs-surveys/gov-finances/data/datasets.html">https://www.census.gov/programs-surveys/gov-finances/data/datasets.html</a></li>
+<li>Historical: <a href="https://www.census.gov/programs-surveys/gov-finances/data/datasets.html">https://www.census.gov/programs-surveys/gov-finances/data/datasets.html</a></li>
+</ul>
+
+<p>
+Item code aggregations and manual: 
+</p>
+<ul class="org-ul">
+<li><a href="https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html">https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgd5d2a58" class="outline-3">
+<h3 id="orgd5d2a58"><span class="section-number-3">2.2</span> Data from: A century of sprawl in the United States</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Link: <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.3k502">https://datadryad.org/stash/dataset/doi:10.5061/dryad.3k502</a>
+</p>
+</div>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Colin Williams</p>
-<p class="date">Created: 2022-07-21 Thu 12:49</p>
+<p class="date">Created: 2022-09-18 Sun 07:46</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
