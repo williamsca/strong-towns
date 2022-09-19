@@ -9,7 +9,8 @@ Financial plans for VA highway projects:
 - https://www.virginiadot.org/projects/financial_plans.asp
 - Revenue-sharing code: https://law.lis.virginia.gov/vacode/title33.2/chapter3/section33.2-357/
 
-
+Cost estimates for FL highway constrution and maintenance:
+- https://www.fdot.gov/programmanagement/estimates/documents/costpermilemodels
   
 * Data Notes
 
