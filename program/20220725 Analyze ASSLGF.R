@@ -28,7 +28,7 @@ lagHWCapOut <- paste0("L_HWCapOut_", seq(5,30,5))
 dt[, (lagHWCapOut) := shift(Regular.Hwy.Cap.Outlay, n = seq(1,7,1), type = "lag"), by = .(ID)] # create fields with lagged capital outlays
 dt[, (lagHWCapOut) := lapply(.SD + 1, log), .SDcols = lagHWCapOut]
 
-RHS <- paste("ID + Year4 + ", paste(lagHWCapOut, collapse = " + "), sep = "")
+RHS <- paste("ID + State.Code*Year4 + ", paste(lagHWCapOut, collapse = " + "), sep = "")
 
 fmla <- as.formula(paste0("log(Regular.Hwy.Direct.Exp + 1) ~ ", RHS))
 lm.hwyExp <- lm(fmla, data = dt)
@@ -40,11 +40,11 @@ fmla <- as.formula(paste0("log(Regular.Hwy.Cap.Outlay + 1) ~ ", RHS))
 lm.hwyCap <- lm(fmla, data = dt)
 
 covlabs.hw <- paste0("Log(capital outlays + 1) at t-", seq(5, 30, 5))
-stargazer(lm.hwyExp, lm.hwyOper, lm.hwyCap, type = "text", omit = c("ID", "Year4"), title = "Highways: Historical Capital Outlays and Contemporary Expenditures",
+stargazer(lm.hwyExp, lm.hwyOper, lm.hwyCap, type = "text", omit = c("ID", "Year4", "State"), title = "Highways: Historical Capital Outlays and Contemporary Expenditures",
           dep.var.caption = c("Dependent variable:"),
           column.labels = c("log(Total Expenditures + 1)", "log(Current Operations + 1)", "log(Capital Outlays + 1)"),
           dep.var.labels.include = FALSE,
-          omit.labels = c("County FEs", "Year FEs"),
+          omit.labels = c("County FEs", "Year FEs", "State-by-Year FEs"),
           covariate.labels = c(covlabs.hw))
 
 # Sewerage
@@ -52,7 +52,7 @@ lagSEWCapOut <- paste0("L_SEWCapOut_", seq(5,30,5))
 dt[, (lagSEWCapOut) := shift(Sewerage.Cap.Outlay, n = seq(1,7,1), type = "lag"), by = .(ID)]
 dt[, (lagSEWCapOut) := lapply(.SD + 1, log), .SDcols = lagSEWCapOut]
 
-RHS <- paste("ID + Year4 + ", paste(lagSEWCapOut, collapse = " + "), sep = "")
+RHS <- paste("ID + State.Code*Year4 + ", paste(lagSEWCapOut, collapse = " + "), sep = "")
 
 fmla <- as.formula(paste0("log(Sewerage.Direct.Expend + 1) ~ ", RHS))
 lm.sewExp <- lm(fmla, data = dt)
@@ -64,11 +64,12 @@ fmla <- as.formula(paste0("log(Sewerage.Cap.Outlay + 1) ~ ", RHS))
 lm.sewCap <- lm(fmla, data = dt)
 
 covlabs.hw <- paste0("Log(capital outlays + 1) at t-", seq(5, 30, 5))
-stargazer(lm.sewExp, lm.sewOper, lm.sewCap, type = "text", omit = c("ID", "Year4"), title = "Sewerage: Historical Capital Outlays and Contemporary Expenditures",
+stargazer(lm.sewExp, lm.sewOper, lm.sewCap, type = "text", omit = c("ID", "Year4", "State.Code"), 
+          title = "Sewerage: Historical Capital Outlays and Contemporary Expenditures",
           dep.var.caption = c("Dependent variable:"),
           column.labels = c("log(Total Expenditures + 1)", "log(Current Operations + 1)", "log(Capital Outlays + 1)"),
           dep.var.labels.include = FALSE,
-          omit.labels = c("County FEs", "Year FEs"),
+          omit.labels = c("County FEs", "Year FEs", "State-by-Year FEs"),
           covariate.labels = c(covlabs.hw))
 
 # TODO: Water Utilities
@@ -82,21 +83,24 @@ dt[, perCapTax := Total.Taxes / Population]
 dt[, (lagINFCapOut) := shift(INFCapOut, n = seq(1,7,1), type = "lag"), by = .(ID)]
 dt[, (lagINFCapOut) := lapply(.SD + 1, log), .SDcols = lagINFCapOut]
 
-fmla <- as.formula(paste("log(Total.Taxes + 1) ~ ID + Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + ")))
+RHS <- paste0("ID + State.Code*Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + "))
+
+fmla <- as.formula(paste0("log(Total.Taxes + 1) ~ ", RHS))
 lm.tax <- lm(fmla, data = dt)
 
-fmla <- as.formula(paste("log(perCapTax + 1) ~ ID + Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + ")))
+fmla <- as.formula(paste0("log(perCapTax + 1) ~ ", RHS))
 lm.taxpcap <- lm(fmla, data = dt)
 
-fmla <- as.formula(paste("log(Population) ~ ID + Year4 + log(INFCapOut+1) + ", paste(lagINFCapOut, collapse = " + ")))
+fmla <- as.formula(paste0("log(Population) ~ ", RHS))
 lm.pop <- lm(fmla, data = dt)
 
 covlabs <- paste0("Log(1 + infrastructure capital outlays) at t-", seq(0,30,5))
-stargazer(lm.tax, lm.taxpcap, lm.pop, type = "text", omit = c("ID", "Year4"), title = "Relationship between Historical Capital Outlays and Current Taxes",
+stargazer(lm.tax, lm.taxpcap, lm.pop, type = "text", omit = c("ID", "Year4", "State.Code"), 
+          title = "Relationship between Historical Capital Outlays and Current Taxes",
           dep.var.caption = c("Dependent variable: Log(Total Taxes + 1)"),
           column.labels = c("Total Taxes", "Per-Capita Taxes"), 
           covariate.labels = covlabs,
-          omit.labels = c("County FEs", "Year FEs"),
+          omit.labels = c("County FEs", "Year FEs", "State-by-Year FEs"),
           note = "Infrastructure is defined here to consist of regular highways and sewerage.")
 
 

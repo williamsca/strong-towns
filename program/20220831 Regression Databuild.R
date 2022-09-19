@@ -21,15 +21,16 @@ dt.712 <- dt.712[(Code %in% codes | grepl("T..", Code)) & ID != 0] # filter to h
 
 # roll up taxes
 dt.712[grepl("T..", Code), Code := "Total.Taxes"]
-dt.712 <- dt.712[, sum(Amt), by = c("ID", "Year4", "Code", "Population")]
+dt.712 <- dt.712[, sum(Amt), by = c("ID", "State", "Year4", "Code", "Population")]
 dt.712[, Population := as.numeric(Population)]
 
-dt.712 <- dcast(dt.712, ID + Year4 + Population ~ Code, value.var = c("V1"), fill = 0)
+dt.712 <- dcast(dt.712, ID + Year4 + Population + State ~ Code, value.var = c("V1"), fill = 0)
 
 dt.712[, Regular.Hwy.Direct.Exp := E44 + F44 + G44][, Sewerage.Direct.Expend := E80 + F80 + G80]
 dt.712[, Regular.Hwy.Cap.Outlay := F44 + G44][, Sewerage.Cap.Outlay := F80 + G80]
 dt.712[, Water.Util.Total.Exp := E91 + F91 + G91 + I91][, Water.Util.Cap.Outlay := F91 + G91]
-setnames(dt.712, old = c("E44", "E80", "E91"), new = c("Regular.Hwy.Cur.Oper..E44.", "Sewerage.Current.Oper..E80.", "Water.Util.Cur.Oper..E91."))
+setnames(dt.712, old = c("E44", "E80", "E91", "State"), 
+         new = c("Regular.Hwy.Cur.Oper..E44.", "Sewerage.Current.Oper..E80.", "Water.Util.Cur.Oper..E91.", "State.Code"))
 dt.712[, `:=`(hwyOpShare = Regular.Hwy.Cur.Oper..E44. / Regular.Hwy.Direct.Exp, sewerageOpShare = Sewerage.Current.Oper..E80. / Sewerage.Direct.Expend)]
 drop <- c("F44", "G44", "F80", "G80", "F91", "G91", "I91")
 dt.712[, (drop) := NULL]
@@ -55,13 +56,16 @@ dt.infrastructure <- merge(dt.countyexpA[, .(Year4, ID, hwyOpShare, Regular.Hwy.
                            by = c("Year4", "ID"))
 
  # merge in tax revenues, population
-dt.infrastructure <- merge(dt.infrastructure, dt.countyrev[, .(Year4, ID, Total.Taxes, Population)], by = c("Year4", "ID"))
+dt.infrastructure <- merge(dt.infrastructure, dt.countyrev[, .(Year4, ID, State.Code, Total.Taxes, Population)], 
+                           by = c("Year4", "ID"))
 
-dt.infrastructure[, (c("Year4", "ID", "Total.Taxes", "Population")) := lapply(.SD, as.numeric), .SDcols = c("Year4", "ID", "Total.Taxes", "Population")]
+dt.infrastructure[, (c("Year4", "ID", "Total.Taxes", "Population", "State.Code")) := lapply(.SD, as.numeric), 
+                  .SDcols = c("Year4", "ID", "Total.Taxes", "Population", "State.Code")]
 
 # append 2007/2012 data
 dt.infrastructure <- rbindlist(list(dt.infrastructure, dt.712), use.names = TRUE)
 
+dt.infrastructure[, min(State.Code == trunc(ID/1000))] # 1 --> State.Code is the first digits of ID
 
 min(between(dt.infrastructure[, hwyOpShare], 0, 1), na.rm = TRUE) # 1 --> operating expenses as a fraction of all direct expenditures is on the interval [0,1]
 min(between(dt.infrastructure[, sewerageOpShare], 0, 1), na.rm = TRUE)
