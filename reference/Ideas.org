@@ -1,0 +1,20 @@
+#+title: Research Ideas
+#+author: Colin Williams
+
+* Infrastructure/Local Finances/Sprawl
+
+*Question:* do tax revenues from new development subsidize the infrastructure maintenance costs of current residents?
+
+*Model sketch:*
+- Local politicians assess "impact fees" on new developments that fund the construction costs of new roads, sewerage, etc.
+- New development is revenue positive: it enlarges the tax base without raising expenditures by much
+- Politician (and voters) are myopic, and do not consider financial impact of future maintenance obligations
+- Politician can increase probability of re-election by driving down tax rates by approving lots of new development
+
+
+
+
+
+
+
+
