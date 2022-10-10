@@ -15,8 +15,9 @@
 - Naive OLS: compare per-capita tax rates observably similar cities (in levels and trends): $$\frac{T_{it}}{N_{it}} = \beta \Delta N_{it} + \phi X_{it} + \theta \Delta X_{it} + \gamma_i + \delta_t + \epsilon_{it}$$
 - Theory is supported if change in population is negatively correlated with per-capita taxes conditional on observables
 - Problem: tax revenue and population change are simultaneously determined. Vibrant local economy drives population growth and raises tax revenue for given tax rate
-- Solution: instrument for changes in local population using the availability of undeveloped land (cities may be constrained by geographic or political boundaries)
-- What happens to taxes when a city can't grow further?
+- Solution: check what happens to taxes when a city can't grow further. Instrument for changes in local population using the availability of undeveloped land within local jurisdiction
+- Difficulty: instrument is only valid for growing cities (amount of undeveloped land unlikely to affect the rate of population decline)
+- Difficulty: political boundaries often change
 
 *Prior Literature*
 - The idea of a "growth Ponzi scheme" is discussed by urban planners (e.g., Marhon 2019), some case studies but no rigorous evaluation
@@ -27,13 +28,19 @@
 - There is plausibly causal relationship between interstate highways and suburbanization (Baum-Snow 2007). Federal spending decisions clearly affect local spatial equilibrium.
 - My question: does it matter if state/local governments make choices about infrastructure spending?
 - On one hand, local govts may prioritize quality upgrades over expansion if residents are worried about congestion
-- Conversely, if Q1 is true, local govts may use federal infrastructure money to enable new development
-- Development may be induced only in low density areas if congestion disamenities are non-linear
+- Conversely, if Q1 is true, local govts may leverage federal infrastructure money to subsidize new development
 
 *Empirical Strategy*
 - Struggling to find exogenous variation in infrastructure grants by county. Highway fund is allocated to states based on formula, but then states choose how to distribute across local jurisdictions.
 - Feiveson (2015) shows that a /general/ revenue sharing program that lasted 1972-1986 apparently induced a one-to-one increase in city expenditures, much of which went towards capital outlays. Revenue was allocated by formula that resulted in variation in transfer amounts across similar cities in different states.
-- Could use this program plus historic panel of U.S. roadway data (Barrington-Leigh and Adam 2016) to see whether the increase in capital outlays went towards expansion of the road network.
+- Could use this program plus historic panel of U.S. roadway data (Barrington-Leigh and Adam 2016) to test whether the increase in capital outlays went towards expansion of the road network.
+
+*** Question 3: do changes in local government spending (and taxes) affect the composition of local businesses? (updates)
+
+*Motivation*
+- We know that public investment in schools, rail transit affects housing prices (Cellini et. al 2010, Kahn 2007)
+- Households have heterogenous valuations for these amenities, leading to a change in local demography ("gentrification")
+- Local demography determines demands faced by local businesses. Households with high valuations for schools want child care centers; households with low valuations may patronize bars.
 
 
 *References*
@@ -44,8 +51,13 @@ Barrington-Leigh, Christopher; Millard-Ball, Adam (2016), Data from: A century o
 
 Baum-Snow, Nathaniel. "Did highways cause suburbanization?." The quarterly journal of economics 122, no. 2 (2007): 775-805.
 
+Cellini, Stephanie Riegg, Fernando Ferreira, and Jesse Rothstein. "The value of school facility investments: Evidence from a dynamic regression discontinuity design." The Quarterly Journal of Economics 125, no. 1 (2010): 215-261.
+
 Feiveson, Laura. "General revenue sharing and public sector unions." Journal of Public Economics 125 (2015): 28-45.
 
+Kahn, Matthew E. "Gentrification trends in new transit‐oriented communities: Evidence from 14 cities that expanded and built rail transit systems." Real Estate Economics 35, no. 2 (2007): 155-182.
+
 Marohn Jr, Charles L. Strong towns: A bottom-up revolution to rebuild American prosperity. John Wiley & Sons, 2019.
+
 
 
