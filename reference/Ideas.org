@@ -37,6 +37,7 @@
 
 
 *References*
+
 Altshuler, Alan A., and Jose A. Gomez-Ibanez. Regulation for revenue: The political economy of land use exactions. Brookings Institution Press, 2000.
 
 Barrington-Leigh, Christopher; Millard-Ball, Adam (2016), Data from: A century of sprawl in the United States, Dryad, Dataset, https://doi.org/10.5061/dryad.3k502
