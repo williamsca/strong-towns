@@ -7,14 +7,15 @@
 
 *Model Sketch*
 - Local politicians assess "impact fees" on new development that funds the construction costs of new roads, sewerage, etc (Altshuler and Gomez-Ibanez 2000)
-- New development is revenue positive: it enlarges the tax base without raising expenditures by much
+- New development (both residential and commercial) is revenue positive: it enlarges the tax base without raising expenditures by much
 - Politician (and voters) are myopic, and do not consider financial impact of future maintenance obligations
 - Politician can increase probability of re-election by driving down tax rates by approving lots of new development
+- Politician cannot choose to shrink the city
 
 *Empirical Strategy*
 - Naive OLS: compare per-capita tax rates observably similar cities (in levels and trends): $$\frac{T_{it}}{N_{it}} = \beta \Delta N_{it} + \phi X_{it} + \theta \Delta X_{it} + \gamma_i + \delta_t + \epsilon_{it}$$
 - Theory is supported if change in population is negatively correlated with per-capita taxes conditional on observables
-- Problem: tax revenue and population change are simultaneously determined. Vibrant local economy drives population growth and raises tax revenue for given tax rate
+- Problem: tax revenue and population change are simultaneously determined. Vibrant local economy drives population growth and raises tax revenue
 - Solution: check what happens to taxes when a city can't grow further. Instrument for changes in local population using the availability of undeveloped land within local jurisdiction
 - Difficulty: instrument is only valid for growing cities (amount of undeveloped land unlikely to affect the rate of population decline)
 - Difficulty: political boundaries often change
@@ -26,9 +27,9 @@
 
 *Motivation*
 - There is plausibly causal relationship between interstate highways and suburbanization (Baum-Snow 2007). Federal spending decisions clearly affect local spatial equilibrium.
-- My question: does it matter if state/local governments make choices about infrastructure spending?
+- My question: does it matter if state/local governments choose how to allocate infrastructure spending?
 - On one hand, local govts may prioritize quality upgrades over expansion if residents are worried about congestion
-- Conversely, if Q1 is true, local govts may leverage federal infrastructure money to subsidize new development
+- Conversely, if Q1 is true, local govts might leverage federal infrastructure money to subsidize new development
 
 *Empirical Strategy*
 - Struggling to find exogenous variation in infrastructure grants by county. Highway fund is allocated to states based on formula, but then states choose how to distribute across local jurisdictions.
@@ -41,6 +42,12 @@
 - We know that public investment in schools, rail transit affects housing prices (Cellini et. al 2010, Kahn 2007)
 - Households have heterogenous valuations for these amenities, leading to a change in local demography ("gentrification")
 - Local demography determines demands faced by local businesses. Households with high valuations for schools want child care centers; households with low valuations may patronize bars.
+
+*Empirical Strategy*
+- Use dynamic RD developed in Cellini et. al (2010) to compare counties with similar histories of school bond elections on each side of threshold
+- (Might also use library bond elections, tax elections)
+- Some risk of spillovers across counties: if county A approves a bond election, families w/ school-age children might move from adjacent county B to A, lowering demand for child care centers in B. 
+- Problem: there isn't much variation in counts of businesses by 6-digit NAICS and county over time.
 
 
 *References*
