@@ -3,10 +3,10 @@
 
 ** Infrastructure/Local Finances/Sprawl
 
-*Question one:* do tax revenues from new development subsidize the infrastructure maintenance costs of current residents?
+*** Question 1: do tax revenues from new development subsidize the maintenance of existing infrastructure?
 
 *Model Sketch*
-- Local politicians assess "impact fees" on new developments that fund the construction costs of new roads, sewerage, etc (Altshuler and Gomez-Ibanez 2000)
+- Local politicians assess "impact fees" on new development that funds the construction costs of new roads, sewerage, etc (Altshuler and Gomez-Ibanez 2000)
 - New development is revenue positive: it enlarges the tax base without raising expenditures by much
 - Politician (and voters) are myopic, and do not consider financial impact of future maintenance obligations
 - Politician can increase probability of re-election by driving down tax rates by approving lots of new development
@@ -18,10 +18,10 @@
 - Solution: instrument for changes in local population using the availability of undeveloped land (cities may be constrained by geographic or political boundaries)
 - What happens to taxes when a city can't grow further?
 
-*Literature Review*
+*Prior Literature*
 - The idea of a "growth Ponzi scheme" is discussed by urban planners (e.g., Marhon 2019), some case studies but no rigorous evaluation
 
-*Question two:* do federal infrastructure grants and transfers induce localities to approve more (low-density) development?
+*** Question 2: do federal infrastructure grants and transfers induce localities to approve more (low-density) development?
 
 *Motivation*
 - There is plausibly causal relationship between interstate highways and suburbanization (Baum-Snow 2007). Federal spending decisions clearly affect local spatial equilibrium.
@@ -33,13 +33,17 @@
 *Empirical Strategy*
 - Struggling to find exogenous variation in infrastructure grants by county. Highway fund is allocated to states based on formula, but then states choose how to distribute across local jurisdictions.
 - Feiveson (2015) shows that a /general/ revenue sharing program that lasted 1972-1986 apparently induced a one-to-one increase in city expenditures, much of which went towards capital outlays. Revenue was allocated by formula that resulted in variation in transfer amounts across similar cities in different states.
-- Could use this program plus historic panel of U.S. roadway data () to see whether the increase in capital outlays went towards expansion of the road network.
+- Could use this program plus historic panel of U.S. roadway data (Barrington-Leigh and Adam 2016) to see whether the increase in capital outlays went towards expansion of the road network.
 
 
 *References*
 Altshuler, Alan A., and Jose A. Gomez-Ibanez. Regulation for revenue: The political economy of land use exactions. Brookings Institution Press, 2000.
 
+Barrington-Leigh, Christopher; Millard-Ball, Adam (2016), Data from: A century of sprawl in the United States, Dryad, Dataset, https://doi.org/10.5061/dryad.3k502
+
 Baum-Snow, Nathaniel. "Did highways cause suburbanization?." The quarterly journal of economics 122, no. 2 (2007): 775-805.
+
+Feiveson, Laura. "General revenue sharing and public sector unions." Journal of Public Economics 125 (2015): 28-45.
 
 Marohn Jr, Charles L. Strong towns: A bottom-up revolution to rebuild American prosperity. John Wiley & Sons, 2019.
 
