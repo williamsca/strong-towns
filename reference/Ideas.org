@@ -3,7 +3,7 @@
 
 ** Infrastructure/Local Finances/Sprawl
 
-*** Question 1: do tax revenues from new development subsidize the maintenance of existing infrastructure?
+*** Do tax revenues from new development subsidize the maintenance of existing infrastructure?
 
 *Model Sketch*
 - Local politicians assess "impact fees" on new development that funds the construction costs of new roads, sewerage, etc (Altshuler and Gomez-Ibanez 2000)
@@ -23,20 +23,20 @@
 *Prior Literature*
 - The idea of a "growth Ponzi scheme" is discussed by urban planners (e.g., Marhon 2019), some case studies but no rigorous evaluation
 
-*** Question 2: do federal infrastructure grants and transfers induce localities to approve more (low-density) development?
+*** Do federal infrastructure grants and transfers induce localities to approve more (low-density) development?
 
 *Motivation*
 - There is plausibly causal relationship between interstate highways and suburbanization (Baum-Snow 2007). Federal spending decisions clearly affect local spatial equilibrium.
 - My question: does it matter if state/local governments choose how to allocate infrastructure spending?
 - On one hand, local govts may prioritize quality upgrades over expansion if residents are worried about congestion
-- Conversely, if Q1 is true, local govts might leverage federal infrastructure money to subsidize new development
+- Conversely, if Q1 is true, local govts might leverage federal infrastructure money to subsidize new development and increase tax base
 
 *Empirical Strategy*
 - Struggling to find exogenous variation in infrastructure grants by county. Highway fund is allocated to states based on formula, but then states choose how to distribute across local jurisdictions.
 - Feiveson (2015) shows that a /general/ revenue sharing program that lasted 1972-1986 apparently induced a one-to-one increase in city expenditures, much of which went towards capital outlays. Revenue was allocated by formula that resulted in variation in transfer amounts across similar cities in different states.
 - Could use this program plus historic panel of U.S. roadway data (Barrington-Leigh and Adam 2016) to test whether the increase in capital outlays went towards expansion of the road network.
 
-*** Question 3: do changes in local government spending (and taxes) affect the composition of local businesses? (updates)
+*** Do changes in local government spending (and taxes) affect the composition of local businesses? (updates)
 
 *Motivation*
 - We know that public investment in schools, rail transit affects housing prices (Cellini et. al 2010, Kahn 2007)
@@ -44,10 +44,11 @@
 - Local demography determines demands faced by local businesses. Households with high valuations for schools want child care centers; households with low valuations may patronize bars.
 
 *Empirical Strategy*
-- Use dynamic RD developed in Cellini et. al (2010) to compare counties with similar histories of school bond elections on each side of threshold
-- (Might also use library bond elections, tax elections)
+- Use dynamic RD developed in Cellini et. al (2010) to compare counties with similar histories of school bond elections on each side of threshold (could also use library bond elections, tax elections)
 - Some risk of spillovers across counties: if county A approves a bond election, families w/ school-age children might move from adjacent county B to A, lowering demand for child care centers in B. 
-- Problem: there isn't much variation in counts of businesses by 6-digit NAICS and county over time.
+
+*Data*
+- Want rich detail on local demographics. Thinking to use ACS, but would need 5-year so all counties are included (not just 65K+ population) so that limits panel to 2009 and later.
 
 
 *References*

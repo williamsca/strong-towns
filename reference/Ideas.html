@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-10-10 Mon 17:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Research Ideas</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Colin Williams" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Research Ideas</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9b243ab">1. Infrastructure/Local Finances/Sprawl</a>
+<ul>
+<li><a href="#org626c0bc">1.1. Do tax revenues from new development subsidize the maintenance of existing infrastructure?</a></li>
+<li><a href="#org71f00e7">1.2. Do federal infrastructure grants and transfers induce localities to approve more (low-density) development?</a></li>
+<li><a href="#org7f5cf5c">1.3. Do changes in local government spending (and taxes) affect the composition of local businesses? (updates)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9b243ab" class="outline-2">
+<h2 id="org9b243ab"><span class="section-number-2">1</span> Infrastructure/Local Finances/Sprawl</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org626c0bc" class="outline-3">
+<h3 id="org626c0bc"><span class="section-number-3">1.1</span> Do tax revenues from new development subsidize the maintenance of existing infrastructure?</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+<b>Model Sketch</b>
+</p>
+<ul class="org-ul">
+<li>Local politicians assess "impact fees" on new development that funds the construction costs of new roads, sewerage, etc (Altshuler and Gomez-Ibanez 2000)</li>
+<li>New development (both residential and commercial) is revenue positive: it enlarges the tax base without raising expenditures by much</li>
+<li>Politician (and voters) are myopic, and do not consider financial impact of future maintenance obligations</li>
+<li>Politician can increase probability of re-election by driving down tax rates by approving lots of new development</li>
+<li>Politician cannot choose to shrink the city</li>
+</ul>
+
+<p>
+<b>Empirical Strategy</b>
+</p>
+<ul class="org-ul">
+<li>Naive OLS: compare per-capita tax rates observably similar cities (in levels and trends): \[\frac{T_{it}}{N_{it}} = \beta \Delta N_{it} + \phi X_{it} + \theta \Delta X_{it} + \gamma_i + \delta_t + \epsilon_{it}\]</li>
+<li>Theory is supported if change in population is negatively correlated with per-capita taxes conditional on observables</li>
+<li>Problem: tax revenue and population change are simultaneously determined. Vibrant local economy drives population growth and raises tax revenue</li>
+<li>Solution: check what happens to taxes when a city can't grow further. Instrument for changes in local population using the availability of undeveloped land within local jurisdiction</li>
+<li>Difficulty: instrument is only valid for growing cities (amount of undeveloped land unlikely to affect the rate of population decline)</li>
+<li>Difficulty: political boundaries often change</li>
+</ul>
+
+<p>
+<b>Prior Literature</b>
+</p>
+<ul class="org-ul">
+<li>The idea of a "growth Ponzi scheme" is discussed by urban planners (e.g., Marhon 2019), some case studies but no rigorous evaluation</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org71f00e7" class="outline-3">
+<h3 id="org71f00e7"><span class="section-number-3">1.2</span> Do federal infrastructure grants and transfers induce localities to approve more (low-density) development?</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<b>Motivation</b>
+</p>
+<ul class="org-ul">
+<li>There is plausibly causal relationship between interstate highways and suburbanization (Baum-Snow 2007). Federal spending decisions clearly affect local spatial equilibrium.</li>
+<li>My question: does it matter if state/local governments choose how to allocate infrastructure spending?</li>
+<li>On one hand, local govts may prioritize quality upgrades over expansion if residents are worried about congestion</li>
+<li>Conversely, if Q1 is true, local govts might leverage federal infrastructure money to subsidize new development and increase tax base</li>
+</ul>
+
+<p>
+<b>Empirical Strategy</b>
+</p>
+<ul class="org-ul">
+<li>Struggling to find exogenous variation in infrastructure grants by county. Highway fund is allocated to states based on formula, but then states choose how to distribute across local jurisdictions.</li>
+<li>Feiveson (2015) shows that a <i>general</i> revenue sharing program that lasted 1972-1986 apparently induced a one-to-one increase in city expenditures, much of which went towards capital outlays. Revenue was allocated by formula that resulted in variation in transfer amounts across similar cities in different states.</li>
+<li>Could use this program plus historic panel of U.S. roadway data (Barrington-Leigh and Adam 2016) to test whether the increase in capital outlays went towards expansion of the road network.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7f5cf5c" class="outline-3">
+<h3 id="org7f5cf5c"><span class="section-number-3">1.3</span> Do changes in local government spending (and taxes) affect the composition of local businesses? (updates)</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+<b>Motivation</b>
+</p>
+<ul class="org-ul">
+<li>We know that public investment in schools, rail transit affects housing prices (Cellini et. al 2010, Kahn 2007)</li>
+<li>Households have heterogenous valuations for these amenities, leading to a change in local demography ("gentrification")</li>
+<li>Local demography determines demands faced by local businesses. Households with high valuations for schools want child care centers; households with low valuations may patronize bars.</li>
+</ul>
+
+<p>
+<b>Empirical Strategy</b>
+</p>
+<ul class="org-ul">
+<li>Use dynamic RD developed in Cellini et. al (2010) to compare counties with similar histories of school bond elections on each side of threshold (could also use library bond elections, tax elections)</li>
+<li>Some risk of spillovers across counties: if county A approves a bond election, families w/ school-age children might move from adjacent county B to A, lowering demand for child care centers in B.</li>
+</ul>
+
+<p>
+<b>Data</b>
+</p>
+<ul class="org-ul">
+<li>Want rich detail on local demographics. Thinking to use ACS, but would need 5-year so all counties are included (not just 65K+ population) so that limits panel to 2009 and later.</li>
+</ul>
+
+
+<p>
+<b>References</b>
+</p>
+
+<p>
+Altshuler, Alan A., and Jose A. Gomez-Ibanez. Regulation for revenue: The political economy of land use exactions. Brookings Institution Press, 2000.
+</p>
+
+<p>
+Barrington-Leigh, Christopher; Millard-Ball, Adam (2016), Data from: A century of sprawl in the United States, Dryad, Dataset, <a href="https://doi.org/10.5061/dryad.3k502">https://doi.org/10.5061/dryad.3k502</a>
+</p>
+
+<p>
+Baum-Snow, Nathaniel. "Did highways cause suburbanization?." The quarterly journal of economics 122, no. 2 (2007): 775-805.
+</p>
+
+<p>
+Cellini, Stephanie Riegg, Fernando Ferreira, and Jesse Rothstein. "The value of school facility investments: Evidence from a dynamic regression discontinuity design." The Quarterly Journal of Economics 125, no. 1 (2010): 215-261.
+</p>
+
+<p>
+Feiveson, Laura. "General revenue sharing and public sector unions." Journal of Public Economics 125 (2015): 28-45.
+</p>
+
+<p>
+Kahn, Matthew E. "Gentrification trends in new transit‐oriented communities: Evidence from 14 cities that expanded and built rail transit systems." Real Estate Economics 35, no. 2 (2007): 155-182.
+</p>
+
+<p>
+Marohn Jr, Charles L. Strong towns: A bottom-up revolution to rebuild American prosperity. John Wiley &amp; Sons, 2019.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Colin Williams</p>
+<p class="date">Created: 2022-10-10 Mon 17:34</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
