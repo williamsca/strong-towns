@@ -23,6 +23,10 @@
 *Prior Literature*
 - The idea of a "growth Ponzi scheme" is discussed by urban planners (e.g., Marhon 2019), some case studies but no rigorous evaluation
 
+*Data*
+Census Boundary and Annexation Survey
+- https://www.census.gov/programs-surveys/bas.html
+
 *** Do federal infrastructure grants and transfers induce localities to approve more (low-density) development?
 
 *Motivation*

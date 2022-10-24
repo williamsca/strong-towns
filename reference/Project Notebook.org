@@ -11,10 +11,15 @@ Financial plans for VA highway projects:
 
 Cost estimates for FL highway constrution and maintenance:
 - https://www.fdot.gov/programmanagement/estimates/documents/costpermilemodels
+
+** Special Use Permits
+- https://dailyprogress.com/news/local/govt-and-politics/the-change-we-need-scottsville-approves-permit-for-36-houses/article_7de0eefc-aa0e-11ec-8669-dfd4e07ed328.html
+- https://www.cvilletomorrow.org/rezoning-special-use-permit-approved-for-lyman-street-homes/
   
 * Data Notes
 
 ** Annual Survey of State and Local Government (ASSLG)
+
 Annual Survey of State and Local Governments (ASSLG) Data
 - Recent: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
 - Historical: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
@@ -22,9 +27,13 @@ Annual Survey of State and Local Governments (ASSLG) Data
 Item code aggregations and manual: 
 - https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html
 
+** State financial reports
+VA: http://www.apa.virginia.gov/APA_Reports/LG_ComparativeReports.aspx
 
 ** Data from: A century of sprawl in the United States
 
 Link: https://datadryad.org/stash/dataset/doi:10.5061/dryad.3k502
+
+
 
 
