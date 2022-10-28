@@ -13,6 +13,9 @@ pacman::p_load(data.table, ggplot2, stargazer)
 
 dt <- readRDS("derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds") 
 
+# Share of spending on highway, sewerage, water utility current operation
+
+
 # Trends in direct infrastructure expenditures ----
 dt.tot <- dt[, .(`Regular Highways` = sum(Regular.Hwy.Direct.Exp), Sewerage = sum(Sewerage.Direct.Expend), `Water Utilities` = sum(Water.Util.Total.Exp)),
                  by = .(Year = Year4)]

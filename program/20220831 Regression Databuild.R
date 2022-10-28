@@ -3,7 +3,7 @@ rm(list = ls())
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
 setwd(dir)
 
-pacman::p_load(data.table, readxl)
+pacman::p_load(data.table, readxl, writexl)
 
 # Load data
 dt.countyexpA <- readRDS(file = "derived/County Area Expenditures A (1957-2002).Rds")
@@ -17,14 +17,17 @@ dt.cpi <- as.data.table(read_xlsx("crosswalks/CPI-U 1967 Dollars (1957-2022).xls
 # Expenditures: 2007 and 2012
 # See https://www2.census.gov/govs/pubs/classification/2006_classification_manual.pdf for code descriptions
 codes <- c("E44", "F44", "G44", "E80", "F80", "G80", "E91", "F91", "G91", "I91")
+dt.712[,Current.Exp :=  Amt*grepl("E..", Code)]
+dt.712[, Current.Exp := sum(Current.Exp), by = .(ID, State, County, Year4)]
+# write_xlsx(dt.712[ID == 28092], path = "derived/TEST.xlsx")
 dt.712 <- dt.712[(Code %in% codes | grepl("T..", Code)) & ID != 0] # filter to highway and sewerage expenditures; drop US totals
 
 # roll up taxes
 dt.712[grepl("T..", Code), Code := "Total.Taxes"]
-dt.712 <- dt.712[, sum(Amt), by = c("ID", "State", "Year4", "Code", "Population")]
+dt.712 <- dt.712[, sum(Amt), by = c("ID", "State", "Year4", "Code", "Population", "Current.Exp")]
 dt.712[, Population := as.numeric(Population)]
 
-dt.712 <- dcast(dt.712, ID + Year4 + Population + State ~ Code, value.var = c("V1"), fill = 0)
+dt.712 <- dcast(dt.712, ID + Year4 + Population + State + Current.Exp ~ Code, value.var = c("V1"), fill = 0)
 
 dt.712[, Regular.Hwy.Direct.Exp := E44 + F44 + G44][, Sewerage.Direct.Expend := E80 + F80 + G80]
 dt.712[, Regular.Hwy.Cap.Outlay := F44 + G44][, Sewerage.Cap.Outlay := F80 + G80]
@@ -36,6 +39,7 @@ drop <- c("F44", "G44", "F80", "G80", "F91", "G91", "I91")
 dt.712[, (drop) := NULL]
 
 # Expenditures: 1957-2002
+# TODO: pull in Current Expenditures "Total.Current.Expend", make sure it is the right one...
 isGe0 <- function(x) {
   return(ifelse(x >= 0, x, NA))
 }
