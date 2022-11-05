@@ -17,6 +17,34 @@ uniqueN(dt.countyrev, by = c("Year4", "ID")) == nrow(dt.countyrev) # TRUE --> an
 uniqueN(dt.countyexpA, by = c("Year4", "ID")) == nrow(dt.countyexpA)
 uniqueN(dt.countyexpB, by = c("Year4", "ID")) == nrow(dt.countyexpB)
 
+v.idvars <- c("Year4", "ID")
+v.drop <- c("State.Code", "County.Code", "Name", "Sort.Code", "Survey.Year")
+dt.countyexpA[, c(v.drop) := NULL]
+dt.countyexpB[, c(v.drop) := NULL]
+dt.countyexpA <- melt(dt.countyexpA, id.vars = v.idvars, variable.name = "Category", value.name = "Amt")
+dt.countyexpB <- melt(dt.countyexpB, id.vars = v.idvars, variable.name = "Category", value.name = "Amt")
+
+dt.countypop <- dt.countyrev[, .(Year4, ID, Name, FIPS.Code.State, FIPS.Code.County, Year.of.Pop.Data, Population)]
+dt.countyrev <- dt.countyrev[, c(v.drop, "Pub.Sort", "Census.Region.Code", "FIPS.Code.State", "FIPS.Code.County", "Year.of.Pop.Data", 
+                                 "Version", "Source", "Revision.Date", "Data.Flag", "Population") := NULL]
+dt.countyrev <- melt(dt.countyrev, id.vars = v.idvars, variable.name = "Category", value.name = "Amt")
+
+dt.category_cw <- as.data.table(read_xls(path = "data/Historical_Finance_Data/County_Area_Fin/_Finance_Publication_Data_Guide.xls",
+                                        sheet = "5a.  CoArea Vars", skip = 146, col_names = FALSE))
+names(dt.category_cw) <- c("V1", "Code", "V3", "Category", paste0("V", 5:15))
+dt.category_cw <- dt.category_cw[!is.na(Code), .(Code, Category)]
+dt.category_cw[, Category := gsub(pattern = "[ ()&/-]", ".", Category)]
+
+dt.countyrev[, Amt := as.numeric(Amt)]
+dt.countyexpA[, Amt := as.numeric(Amt)]
+dt.countyexpB[, Amt := as.numeric(Amt)]
+
+dt.countyfin <- rbindlist(list(dt.countyexpA, dt.countyexpB, dt.countyrev))
+dt.countyfin <- merge(dt.countyfin, dt.category_cw, by = c("Category"), all.x = TRUE)
+nrow(dt.countyfin[is.na(Code)]) == 0 # 1 --> all categories have a matched code
+
+# The 2007 and 2012 data are provided separately due to changes in how certain revenues and expenditures are categorized for local governments
+# See ".../data/Historical_Finance_Data/County_Area_Fin/_Finance_Publication_Data_Guide.xls" tab "5a.  CoArea Vars" for a summary of the changes
 dt.07 <- fread("data/Historical_Finance_Data/County_Area_Finances_2007/County_Area_Finances_2007.txt")
 dt.07pop <- read_xlsx("data/Historical_Finance_Data/County_Area_Finances_2007/County_Area_Finances_2007_updated.xlsx",
                      sheet = "County_ID_Lookup")
@@ -34,9 +62,8 @@ dt.12 <- merge(dt.12, subset(dt.12pop, select = c("ID", "Population")), by = "ID
 dt.12[, Year4 := 2012]
 dt.712 <- rbindlist(list(dt.07, dt.12))
 
-saveRDS(dt.countyexpA, file = "derived/County Area Expenditures A (1957-2002).Rds")
-saveRDS(dt.countyrev, file = "derived/County Area Revenues (1957-2002).Rds")
-saveRDS(dt.countyexpB, file = "derived/County Area Expenditures B (1957-2002).Rds")
+saveRDS(dt.countyfin, file = "derived/County Area Finances (1957-2002).Rds")
+saveRDS(dt.countypop, file = "derived/County Area Population (1957-2002).Rds")
 saveRDS(dt.712, file = "derived/County Area Finances (2007-2012).Rds")
 
 # dt.city <- as.data.table(mdb.get(file = "data/Historical_Finance_Data/City_Govt_Fin/City_Govt_Finances.mdb", tables = c("City_Govt_Finances")))

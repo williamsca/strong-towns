@@ -20,7 +20,7 @@ codes <- c("E44", "F44", "G44", "E80", "F80", "G80", "E91", "F91", "G91", "I91")
 dt.712[,Current.Exp :=  Amt*grepl("E..", Code)]
 dt.712[, Current.Exp := sum(Current.Exp), by = .(ID, State, County, Year4)]
 # write_xlsx(dt.712[ID == 28092], path = "derived/TEST.xlsx")
-dt.712 <- dt.712[(Code %in% codes | grepl("T..", Code)) & ID != 0] # filter to highway and sewerage expenditures; drop US totals
+dt.712 <- dt.712[(Code %in% codes | grepl("T..", Code)) & ID != 0] # filter to highwa, sewerage, and water utility expenditures; drop US totals
 
 # roll up taxes
 dt.712[grepl("T..", Code), Code := "Total.Taxes"]

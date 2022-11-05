@@ -28,8 +28,22 @@ Annual Survey of State and Local Governments (ASSLG) Data
 - Recent: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
 - Historical: https://www.census.gov/programs-surveys/gov-finances/data/datasets.html
 
+*** Finance codes
 Item code aggregations and manual: 
 - https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html
+
+For FY 2005 and later, code coverage was standardized. A brief summary of the changes:
+- Many tax codes which formerly applied only to states now apply to local governments. These revenues associated with these codes were previously associated with "all other" tax codes.
+- Certain non-tax revenue codes are now collected for local governments
+- Expenditures for toll highways (45), police protection (62) and misc. commercial activities (03) are now collected for local governments
+- Certain debt categories are no longer collected. Only certain total variables are comparable to previous years.
+- See ".../_Finance_Publication_Data_Guide.xlsx" for more details
+
+Individual State Descriptions (2017):
+- https://www.census.gov/content/dam/Census/library/publications/2017/econ/2017isd.pdf
+
+County shapefiles since 1990:
+- https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 
 ** State financial reports
 VA: http://www.apa.virginia.gov/APA_Reports/LG_ComparativeReports.aspx
