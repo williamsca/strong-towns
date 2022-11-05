@@ -31,8 +31,8 @@ dt.countyrev <- melt(dt.countyrev, id.vars = v.idvars, variable.name = "Category
 
 dt.category_cw <- as.data.table(read_xls(path = "data/Historical_Finance_Data/County_Area_Fin/_Finance_Publication_Data_Guide.xls",
                                         sheet = "5a.  CoArea Vars", skip = 146, col_names = FALSE))
-names(dt.category_cw) <- c("V1", "Code", "V3", "Category", paste0("V", 5:15))
-dt.category_cw <- dt.category_cw[!is.na(Code), .(Code, Category)]
+names(dt.category_cw) <- c("V1", "Code", "SAS_name", "Category", paste0("V", 5:15))
+dt.category_cw <- dt.category_cw[!is.na(Code), .(Code, Category, SAS_name)]
 dt.category_cw[, Category := gsub(pattern = "[ ()&/-]", ".", Category)]
 
 dt.countyrev[, Amt := as.numeric(Amt)]
@@ -42,6 +42,26 @@ dt.countyexpB[, Amt := as.numeric(Amt)]
 dt.countyfin <- rbindlist(list(dt.countyexpA, dt.countyexpB, dt.countyrev))
 dt.countyfin <- merge(dt.countyfin, dt.category_cw, by = c("Category"), all.x = TRUE)
 nrow(dt.countyfin[is.na(Code)]) == 0 # 1 --> all categories have a matched code
+
+dt.countyfin[, Total.Exp := max(Amt * (SAS_name == "C301")), by = .(Year4, ID)]
+# dt.countyfin[, General.Exp := max(Amt * (SAS_name == "C315")), by = .(Year4, ID)]
+
+table(dt.countyfin[grepl("[EIJXYFGK][0-9]", Code), Code])
+table(dt.countyfin[grepl("[LMQS][0-9]", Code), Code])
+
+dt.countyfin[grepl("[EIJXYFGKLS][0-9]", Code), Cat1 := "Expenditure"]
+dt.countyfin[, Tot_Cat1 := sum(Amt), by = .(Year4, ID, Cat1)]
+# TODO: align totals. Use methodology for summary tabulations information:
+# https://www.census.gov/programs-surveys/gov-finances/technical-documentation/classification-manuals.html
+
+head(dt.countyfin[Cat1 == "Expenditure"])
+
+
+View(dt.countyfin[Year4 == 1997 & ID == 1014])
+
+# v.dupcodes <- unique(dt.category_cw[duplicated(Code), Code])
+dt.countyfin <- dt.countyfin[Code == SAS_name] # drop subtotal codes (and some extras that appear irrelevant)
+max(duplicated(dt.countyfin, by = c("Year4", "ID", "Code"))) # 0 --> no duplicate code
 
 # The 2007 and 2012 data are provided separately due to changes in how certain revenues and expenditures are categorized for local governments
 # See ".../data/Historical_Finance_Data/County_Area_Fin/_Finance_Publication_Data_Guide.xls" tab "5a.  CoArea Vars" for a summary of the changes

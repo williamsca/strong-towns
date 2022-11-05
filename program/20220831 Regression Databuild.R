@@ -6,14 +6,30 @@ setwd(dir)
 pacman::p_load(data.table, readxl, writexl)
 
 # Load data
-dt.countyexpA <- readRDS(file = "derived/County Area Expenditures A (1957-2002).Rds")
-dt.countyrev <- readRDS(file = "derived/County Area Revenues (1957-2002).Rds")
-dt.countyexpB <- readRDS(file = "derived/County Area Expenditures B (1957-2002).Rds")
+dt.countyfin <- readRDS(file = "derived/County Area Finances (1957-2002).Rds")
+dt.countypop <- readRDS(file = "derived/County Area Population (1957-2002).Rds")
 dt.712 <- readRDS(file = "derived/County Area Finances (2007-2012).Rds")
 
 dt.cpi <- as.data.table(read_xlsx("crosswalks/CPI-U 1967 Dollars (1957-2022).xlsx", skip = 11)) 
 
 # Regression databuild ----
+dt.countyfin[, c("Category", "SAS_name") := NULL]
+dt.countyfin <- merge(dt.countyfin, dt.countypop[, .(ID, Year4, Population)], by = c("ID", "Year4"))
+
+for (col in c("ID", "Year4", "Population")) set(dt.countyfin, j = col, value = as.numeric(dt.countyfin[[col]]))
+dt <- rbindlist(list(dt.countyfin, dt.712[ID != 0, .(ID, Year4, Amt, Code, Population)]))
+
+dt.countyfin[grepl("[EIJXYFGKLS][0-9]", Code), Cat1 := "Expenditure"] # this is not exactly correct, but it is close enough for now
+dt.countyfin[, Tot_Cat1 := sum(Amt), by = .(Year4, ID, Cat1)]
+# TODO: compute highways, water utilities, sewerage expenditures (separately for current and current + capital) as % of total expenditure
+
+dt <- merge(dt, dt.cpi[, .(Year, Annual)], by.x = c("Year4"), by.y = c("Year"), all.x = TRUE, all.y = FALSE)
+dt[, Amt1967 := Amt / (Annual / 100)]
+
+
+
+
+# Superseded ----
 # Expenditures: 2007 and 2012
 # See https://www2.census.gov/govs/pubs/classification/2006_classification_manual.pdf for code descriptions
 codes <- c("E44", "F44", "G44", "E80", "F80", "G80", "E91", "F91", "G91", "I91")
@@ -39,7 +55,6 @@ drop <- c("F44", "G44", "F80", "G80", "F91", "G91", "I91")
 dt.712[, (drop) := NULL]
 
 # Expenditures: 1957-2002
-# TODO: pull in Current Expenditures "Total.Current.Expend", make sure it is the right one...
 isGe0 <- function(x) {
   return(ifelse(x >= 0, x, NA))
 }
