@@ -17,17 +17,44 @@ dt.countyfin[, c("Category", "SAS_name") := NULL]
 dt.countyfin <- merge(dt.countyfin, dt.countypop[, .(ID, Year4, Population)], by = c("ID", "Year4"))
 
 for (col in c("ID", "Year4", "Population")) set(dt.countyfin, j = col, value = as.numeric(dt.countyfin[[col]]))
+dt.712[, Population := as.numeric(Population)]
 dt <- rbindlist(list(dt.countyfin, dt.712[ID != 0, .(ID, Year4, Amt, Code, Population)]))
 
-dt.countyfin[grepl("[EIJXYFGKLS][0-9]", Code), Cat1 := "Expenditure"] # this is not exactly correct, but it is close enough for now
-dt.countyfin[, Tot_Cat1 := sum(Amt), by = .(Year4, ID, Cat1)]
-# TODO: compute highways, water utilities, sewerage expenditures (separately for current and current + capital) as % of total expenditure
+dt.pop <- unique(dt[, .(Year4, ID, Population)], by = c("Year4", "ID", "Population"))
 
+# The '-11111' flag indicates that a particular financial code was unused that year
+# I set these observations to NA in order to calculate total expenditures and revenues
+# TODO: figure out why some debt codes appear to have legitimately negative amounts
+dt[Amt == -11111 & !(Amt %in% c("X08", "Y08")), Amt := NA] 
+
+dt[grepl("[EIJXYFGKLS][0-9]", Code), Cat1 := "Expenditure"] # TODO: reconcile this amount with raw subtotals (use import code)
+# TODO: reconcile the 2012 figures with Census report
+# https://www.census.gov/library/publications/2014/econ/g12-cg-alfin.html
+
+v.directexp <- c("E", "F", "G")
+v.reghwy <- paste0(v.directexp, 44)
+v.sewer <- paste0(v.directexp, 80)
+v.watersupply <- paste0(v.directexp, 91) # I91: interest on water utility debt 
+
+dt[Code %in% v.reghwy, Cat2 := "Regular Highway"]
+dt[Code %in% v.sewer, Cat2 := "Sewerage"]
+dt[Code %in% v.watersupply, Cat2 := "Water Supply"]
+dt.exp <- dt[Cat1 == "Expenditure"]
+
+dt.summary <- dt.exp[, .(Tot_Cat2 = sum(Amt)), by = .(Year4, Cat1, Cat2)] # sum over finance codes and counties
+dt.summary[, Tot_Cat1 := sum(Tot_Cat2), by = .(Year4)]
+
+# TRUE --> totals are consistent
+all.equal(dt.summary[is.na(Cat2) & Year4 >= 1972, .(Year4, Cat1, Tot_Cat1)], 
+          dt[Cat1 == "Expenditure" & Year4 >= 1972, .(Tot_Cat1 = sum(Amt, na.rm = TRUE)), by = .(Year4, Cat1)]) 
+
+dt.summary <- merge(dt.summary, dt.pop[, .(Pop = sum(Population)), by = .(Year4)], by = "Year4")
+dt.summary[, `Expenditure Share (%)` := Tot_Cat2 / Tot_Cat1]
+dt.summary[, `Expenditures Per-Capita ($)` := Tot_Cat2 / Pop]
+
+# Merge in CPI and deflate to 1967 dollars
 dt <- merge(dt, dt.cpi[, .(Year, Annual)], by.x = c("Year4"), by.y = c("Year"), all.x = TRUE, all.y = FALSE)
 dt[, Amt1967 := Amt / (Annual / 100)]
-
-
-
 
 # Superseded ----
 # Expenditures: 2007 and 2012
