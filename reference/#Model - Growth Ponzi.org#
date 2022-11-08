@@ -1,9 +1,0 @@
-A local official maximizes her probability of re-election by choice of a per-capita tax rate $\tau$ and the number of new construction permits to approve $d \in [0, \bar{d}]$ where $\bar{d}$ is an exogenous number of permit applications that may depend on local market conditions, regulations, and the amount of available land in the jurisdiction. The official assesses taxes on $N$ current residents and $d$ new residents for a total revenue of $(1 + \tau)(N+d)$. 
-
-Tax revenues are used to maintain the infrastructure -- e.g., local roads and sewerage -- that services current residents only at cost $k$ per resident. New construction is funded by impact fees assessed on the developer and is costless from the perspective of the official.\footnote{Impact fees, or exactions, proliferated rapidly during the 1970s as local governments sought to ensure that new developments paid their own way \citep{altshuler_regulation_2000}.} Infrastructure is the only public service provided by the official.
-
-The official's problem is $$\max_{\tau, d} r(\tau) \text{ subject to } (1 + \tau)(N+d) \geq kN \text{ and } 0 \leq d \leq \bar{d}$$
-
-where $r(\cdot)$, the official's probability of re-election, is decreasing in $\tau$. The official's optimal choice is $d^* = \bar{d}$, yielding a per-capita tax rate of $$\tau^* = \frac{kN}{N + \bar{d}} - 1$$
-
-The tax rate necessary to maintain the current stock of infrastructure is strictly decreasing in $d$. Therefore, the official chooses to allow the maximum amount of new construction. Taxes are decreasing in the number of permit applications: $$\frac{\partial \tau^*}{\partial \bar{d}} = -\frac{kN}{(N+\bar{d})^2} < 0$$
