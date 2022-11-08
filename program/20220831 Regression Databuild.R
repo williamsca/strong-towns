@@ -10,9 +10,15 @@ dt.countyfin <- readRDS(file = "derived/County Area Finances (1957-2002).Rds")
 dt.countypop <- readRDS(file = "derived/County Area Population (1957-2002).Rds")
 dt.712 <- readRDS(file = "derived/County Area Finances (2007-2012).Rds")
 
+dt.housing <- readRDS(file = "derived/Block Group Housing (2013).Rds")
+
 dt.cpi <- as.data.table(read_xlsx("crosswalks/CPI-U 1967 Dollars (1957-2022).xlsx", skip = 11)) 
 
+dt.gov2fips <- readRDS("crosswalks/GOVS~FIPS.Rds")
+
 # Regression databuild ----
+
+# combine 1957-2002 and 2007-2012 county panels
 dt.countyfin[, c("Category", "SAS_name") := NULL]
 dt.countyfin <- merge(dt.countyfin, dt.countypop[, .(ID, Year4, Population)], by = c("ID", "Year4"))
 
@@ -20,12 +26,27 @@ for (col in c("ID", "Year4", "Population")) set(dt.countyfin, j = col, value = a
 dt.712[, Population := as.numeric(Population)]
 dt <- rbindlist(list(dt.countyfin, dt.712[ID != 0, .(ID, Year4, Amt, Code, Population)]))
 
-dt.pop <- unique(dt[, .(Year4, ID, Population)], by = c("Year4", "ID", "Population"))
+# create county covariates (year, ID)
+dt.countycov <- unique(dt[, .(Year4, ID, Population)], by = c("Year4", "ID", "Population"))
+
+dt.housing <- unique(dt.housing[medYearBuiltCty > 0, .(medYearBuiltCty, nUnitsCty, state, county)]) # exclude the one county w/o median year built
+# dt.housing[, FIPS.Code.State := as.numeric(state)][, FIPS.Code.County := as.numeric(county)]
+
+# TODO: make sure mapping from GOVS to FIPS is accurate across years
+dt.countycov <- merge(dt.countycov, dt.gov2fips, by = "ID", all.x = TRUE) # NB: two (county, year) tuples aren't matched to a FIPS
+
+dt.countycov <- merge(dt.countycov, dt.housing, by.x = c("FIPS.Code.State", "FIPS.Code.County"), 
+                      by.y = c("state", "county"), all = TRUE)
+dt.countycov[, medAge := Year4 - medYearBuiltCty]
 
 # The '-11111' flag indicates that a particular financial code was unused that year
 # I set these observations to NA in order to calculate total expenditures and revenues
 # TODO: figure out why some debt codes appear to have legitimately negative amounts
 dt[Amt == -11111 & !(Amt %in% c("X08", "Y08")), Amt := NA] 
+
+# Merge in CPI and deflate to 1967 dollars
+dt <- merge(dt, dt.cpi[, .(Year, Annual)], by.x = c("Year4"), by.y = c("Year"), all.x = TRUE, all.y = FALSE)
+dt[, Amt1967 := Amt / (Annual / 100)]
 
 dt[grepl("[EIJXYFGKLS][0-9]", Code), Cat1 := "Expenditure"] # TODO: reconcile this amount with raw subtotals (use import code)
 # TODO: reconcile the 2012 figures with Census report
@@ -41,20 +62,8 @@ dt[Code %in% v.sewer, Cat2 := "Sewerage"]
 dt[Code %in% v.watersupply, Cat2 := "Water Supply"]
 dt.exp <- dt[Cat1 == "Expenditure"]
 
-dt.summary <- dt.exp[, .(Tot_Cat2 = sum(Amt)), by = .(Year4, Cat1, Cat2)] # sum over finance codes and counties
-dt.summary[, Tot_Cat1 := sum(Tot_Cat2), by = .(Year4)]
-
-# TRUE --> totals are consistent
-all.equal(dt.summary[is.na(Cat2) & Year4 >= 1972, .(Year4, Cat1, Tot_Cat1)], 
-          dt[Cat1 == "Expenditure" & Year4 >= 1972, .(Tot_Cat1 = sum(Amt, na.rm = TRUE)), by = .(Year4, Cat1)]) 
-
-dt.summary <- merge(dt.summary, dt.pop[, .(Pop = sum(Population)), by = .(Year4)], by = "Year4")
-dt.summary[, `Expenditure Share (%)` := Tot_Cat2 / Tot_Cat1]
-dt.summary[, `Expenditures Per-Capita ($)` := Tot_Cat2 / Pop]
-
-# Merge in CPI and deflate to 1967 dollars
-dt <- merge(dt, dt.cpi[, .(Year, Annual)], by.x = c("Year4"), by.y = c("Year"), all.x = TRUE, all.y = FALSE)
-dt[, Amt1967 := Amt / (Annual / 100)]
+saveRDS(dt, file = "derived/County Area Expenditures (1957-2012).Rds")
+saveRDS(dt.countycov, "derived/County Covariates (1957-2012).Rds")
 
 # Superseded ----
 # Expenditures: 2007 and 2012

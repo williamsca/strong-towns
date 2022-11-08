@@ -37,6 +37,11 @@ for (i in 1:nrow(dt.fips)) {
 dt <- rbindlist(l.medyear)
 setnames(dt, c("B25034_001E", "B25035_001E"), c("nUnits", "medYearBuilt"))
 
+dt.county <- getCensus(name = "acs/acs5", vintage =  2013, region = "county:*", vars = c("B25034_001E", "B25035_001E"))
+setnames(dt.county, c("B25034_001E", "B25035_001E"), c("nUnitsCty", "medYearBuiltCty"))
+
+dt <- merge(dt, dt.county, by = c("state", "county"))
+
 saveRDS(dt, "derived/Block Group Housing (2013).Rds")
 
 # Testing ----

@@ -13,6 +13,13 @@ dt.countyrev <- as.data.table(mdb.get(file = "data/Historical_Finance_Data/Count
 dt.countyexpA <- as.data.table(mdb.get(file = "data/Historical_Finance_Data/County_Area_Fin/County_Area_Finances.mdb", tables = c("2_ExpendituresA")))
 dt.countyexpB <- as.data.table(mdb.get(file = "data/Historical_Finance_Data/County_Area_Fin/County_Area_Finances.mdb", tables = c("3_ExpendituresB")))
 
+dt.govs2fips_cw <- as.data.table(read_excel("data/Historical_Finance_Data/County_Area_Fin/GOVS_to_FIPS_Codes_State_&_County_2007.xls", 
+                                            sheet = "County Codes", skip = 14))
+names(dt.govs2fips_cw) <- c("ID", "V2", "V3", "Name", "FIPS.Code.State", "FIPS.Code.County2002", "FIPS.Code.County2007")
+nrow(dt.govs2fips_cw[FIPS.Code.County2002 != FIPS.Code.County2007]) == 0 # TRUE --> 2002 and 2007 FIPS codes are identical
+dt.govs2fips_cw[, ID := as.numeric(ID)]
+dt.govs2fips_cw <- dt.govs2fips_cw[!is.na(ID)]
+
 uniqueN(dt.countyrev, by = c("Year4", "ID")) == nrow(dt.countyrev) # TRUE --> an observation is uniquely identified by a Year, ID tuple
 uniqueN(dt.countyexpA, by = c("Year4", "ID")) == nrow(dt.countyexpA)
 uniqueN(dt.countyexpB, by = c("Year4", "ID")) == nrow(dt.countyexpB)
@@ -85,6 +92,7 @@ dt.712 <- rbindlist(list(dt.07, dt.12))
 saveRDS(dt.countyfin, file = "derived/County Area Finances (1957-2002).Rds")
 saveRDS(dt.countypop, file = "derived/County Area Population (1957-2002).Rds")
 saveRDS(dt.712, file = "derived/County Area Finances (2007-2012).Rds")
+saveRDS(dt.govs2fips_cw[, .(ID, Name, FIPS.Code.State, FIPS.Code.County = FIPS.Code.County2002)], file = "crosswalks/GOVS~FIPS.Rds")
 
 # dt.city <- as.data.table(mdb.get(file = "data/Historical_Finance_Data/City_Govt_Fin/City_Govt_Finances.mdb", tables = c("City_Govt_Finances")))
 # saveRDS(dt.city, file = "derived/City Govt Finances (1951-2006).Rds")

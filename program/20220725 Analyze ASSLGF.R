@@ -9,13 +9,53 @@ rm(list = ls())
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
 setwd(dir)
 
-pacman::p_load(data.table, ggplot2, stargazer)
+pacman::p_load(data.table, ggplot2, stargazer, plm)
 
-dt <- readRDS("derived/County Area Infrastructure Spending and Tax Revenues (1957 - 2012).Rds") 
+dt <- readRDS("derived/County Area Expenditures (1957-2012).Rds") 
+dt.cov <- readRDS("derived/County Covariates (1957-2012).Rds")
+dt.cov <- dt.cov[!is.na(FIPS.Code.County)]
+
+dt.exp <- dt[Cat1 == "Expenditure"]
+
+# Regress per-capita infrastructure spending on age of housing stock
+dt.cat2exp <- dt.exp[, .(Amt1967 = sum(Amt1967)), by = .(Year4, ID, Cat1, Cat2)] # sum over finance codes
+dt.cat2exp <- dt.cat2exp[!is.na(Amt1967)]
+dt.cat2exp[is.na(Cat2), Cat2 := "Other Expenditure"]
+
+dt.cat2exp <- merge(dt.cat2exp, dt.cov, by = c("ID", "Year4"), all.x = TRUE)
+dt.cat2exp[, AmtPCap := Amt1967 * 1000 / Population]
+setnames(dt.cat2exp, c("Regular Highway", "Sewerage", "Water Supply", "Other Expenditure"),
+         c("RegHwy", "Sewerage", "WaterSup", "OtherExp"))
+
+dt.cat2exp <- dcast(dt.cat2exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name + medAge ~ Cat2, value.var = "AmtPCap")
+
+lm.expHwy <- plm(RegHwy ~ medAge + OtherExp, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
+lm.expSew <- plm(Sewerage ~ medAge + OtherExp, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
+lm.expH20 <- plm(WaterSup ~ medAge + OtherExp, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
+
+# Direct expenditure on water supply and sewerage is higher in counties with an older housing stock;
+# expenditure on roads is somewhat lower (density)?
+stargazer(lm.expHwy, lm.expSew, lm.expH20, type = "text", omit = c("Year4"),
+          dep.var.labels = c("Direct Expenditures"), 
+          column.labels = c("Regular Highways", "Sewerage", "Water Supply"),
+          covariate.labels = c("Median age of housing units", "Other government expenditures"))
 
 # Share of spending on highway, sewerage, water utility current operation
 
+# Compute infrastructure spending as % of total and per-capita amounts ----
+dt.summary <- dt.exp[, .(Tot_Cat2 = sum(Amt)), by = .(Year4, Cat1, Cat2)] # sum over finance codes and counties
+dt.summary[, Tot_Cat1 := sum(Tot_Cat2), by = .(Year4)]
 
+# TRUE --> totals are consistent
+all.equal(dt.summary[is.na(Cat2) & Year4 >= 1972, .(Year4, Cat1, Tot_Cat1)], 
+          dt[Cat1 == "Expenditure" & Year4 >= 1972, .(Tot_Cat1 = sum(Amt, na.rm = TRUE)), by = .(Year4, Cat1)]) 
+
+dt.summary <- merge(dt.summary, dt.pop[, .(Pop = sum(Population)), by = .(Year4)], by = "Year4")
+dt.summary[, `Expenditure Share (%)` := Tot_Cat2 / Tot_Cat1]
+dt.summary[, `Expenditures Per-Capita ($)` := Tot_Cat2 / Pop]
+
+
+# SUPSERSEDED ----
 # Trends in direct infrastructure expenditures ----
 dt.tot <- dt[, .(`Regular Highways` = sum(Regular.Hwy.Direct.Exp), Sewerage = sum(Sewerage.Direct.Expend), `Water Utilities` = sum(Water.Util.Total.Exp)),
                  by = .(Year = Year4)]
