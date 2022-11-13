@@ -17,6 +17,10 @@ dt.cov <- dt.cov[!is.na(FIPS.Code.County)]
 
 dt.exp <- dt[Cat1 == "Expenditure"]
 
+# Number of approved residential building permits by county population
+ggplot(data = dt.cov[Year4 == 1992 & Population <= 1000000], mapping = aes(x = Population, y = Bldgs1)) +
+  geom_point(alpha = .3)
+
 # Regress per-capita infrastructure spending on age of housing stock
 dt.cat2exp <- dt.exp[, .(Amt1967 = sum(Amt1967)), by = .(Year4, ID, Cat1, Cat2)] # sum over finance codes
 dt.cat2exp <- dt.cat2exp[!is.na(Amt1967)]

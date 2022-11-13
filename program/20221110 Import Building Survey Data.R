@@ -12,7 +12,7 @@ url <- "https://www2.census.gov/econ/bps/County/"
 l.files <- paste0(url, "co", 1990:2021, "a.txt")
 
 dt <- rbindlist(lapply(l.files, fread, header = FALSE, blank.lines.skip = TRUE, 
-                       fill = TRUE, skip = 2, sep =))
+                       fill = TRUE, skip = 2, sep = ","))
 
 colnames <- paste0(paste0(rep(c("Bldgs", "Units", "Value"), 4)), 
                    c(rep("1", 3), rep("2", 3), rep("3-4", 3), rep("5+", 3)))
@@ -22,6 +22,9 @@ setnames(dt, new = colnames)
 
 dt[Date > 9000, Year4 := (Date - 99)/100 + 1900]
 dt[is.na(Year4), Year4 := Date]
+
+dt[, FIPS.Code.State := sprintf("%02d", FIPS.Code.State)]
+dt[, FIPS.Code.County := sprintf("%03d", FIPS.Code.County)]
 
 # Sanity checks ----
 # The 2 and 3-4 checks fail for a handful of rows

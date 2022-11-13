@@ -50,7 +50,17 @@ County shapefiles since 1990:
 - https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 
 ** State financial reports
+
 VA: http://www.apa.virginia.gov/APA_Reports/LG_ComparativeReports.aspx
+
+** Property Tax Database (Lincoln Institute)
+
+State tax and expenditure limits (TELs):
+- https://www.lincolninst.edu/research-data/data-toolkits/significant-features-property-tax/access-property-tax-database/property-tax-limits
+
+** Building Permits Survey
+
+https://www.census.gov/construction/bps/
 
 ** Data from: A century of sprawl in the United States
 

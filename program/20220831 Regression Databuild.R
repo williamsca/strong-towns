@@ -11,6 +11,7 @@ dt.countypop <- readRDS(file = "derived/County Area Population (1957-2002).Rds")
 dt.712 <- readRDS(file = "derived/County Area Finances (2007-2012).Rds")
 
 dt.housing <- readRDS(file = "derived/Block Group Housing (2013).Rds")
+dt.permits <- readRDS(file = "derived/County Residential Building Permits (1990-2021).Rds")
 
 dt.cpi <- as.data.table(read_xlsx("crosswalks/CPI-U 1967 Dollars (1957-2022).xlsx", skip = 11)) 
 
@@ -38,6 +39,8 @@ dt.countycov <- merge(dt.countycov, dt.gov2fips, by = "ID", all.x = TRUE) # NB: 
 dt.countycov <- merge(dt.countycov, dt.housing, by.x = c("FIPS.Code.State", "FIPS.Code.County"), 
                       by.y = c("state", "county"), all = TRUE)
 dt.countycov[, medAge := Year4 - medYearBuiltCty]
+
+dt.countycov <- merge(dt.countycov, dt.permits, by = c("FIPS.Code.State", "FIPS.Code.County", "Year4"), all.x = TRUE)
 
 # The '-11111' flag indicates that a particular financial code was unused that year
 # I set these observations to NA in order to calculate total expenditures and revenues
