@@ -2,8 +2,6 @@
 # Author: Colin Williams
 # Last Update: 7/25/2022
 
-# TODO: add state to databuild; use state-by-year FEs
-
 rm(list = ls())
 
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
@@ -21,28 +19,28 @@ dt.exp <- dt[Cat1 == "Expenditure"]
 ggplot(data = dt.cov[Year4 == 1992 & Population <= 1000000], mapping = aes(x = Population, y = Bldgs1)) +
   geom_point(alpha = .3)
 
-# Regress per-capita infrastructure spending on age of housing stock
+# Regress per-capita infrastructure spending on age of housing stock, approved residential construction permits
+# TODO: distinguish capital spending from current operations. should respond differently to residential construction!
 dt.cat2exp <- dt.exp[, .(Amt1967 = sum(Amt1967)), by = .(Year4, ID, Cat1, Cat2)] # sum over finance codes
 dt.cat2exp <- dt.cat2exp[!is.na(Amt1967)]
 dt.cat2exp[is.na(Cat2), Cat2 := "Other Expenditure"]
 
 dt.cat2exp <- merge(dt.cat2exp, dt.cov, by = c("ID", "Year4"), all.x = TRUE)
 dt.cat2exp[, AmtPCap := Amt1967 * 1000 / Population]
+
+dt.cat2exp <- dcast(dt.cat2exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + medAge + Population + Bldgs1.5YT ~ Cat2, value.var = "AmtPCap")
 setnames(dt.cat2exp, c("Regular Highway", "Sewerage", "Water Supply", "Other Expenditure"),
          c("RegHwy", "Sewerage", "WaterSup", "OtherExp"))
 
-dt.cat2exp <- dcast(dt.cat2exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name + medAge ~ Cat2, value.var = "AmtPCap")
-
-lm.expHwy <- plm(RegHwy ~ medAge + OtherExp, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
-lm.expSew <- plm(Sewerage ~ medAge + OtherExp, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
-lm.expH20 <- plm(WaterSup ~ medAge + OtherExp, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
+lm.expHwy <- plm(RegHwy ~ medAge + OtherExp + Bldgs1.5YT, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
+lm.expSew <- plm(Sewerage ~ medAge + OtherExp + Bldgs1.5YT, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
+lm.expH20 <- plm(WaterSup ~ medAge + OtherExp + Bldgs1.5YT, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
 
 # Direct expenditure on water supply and sewerage is higher in counties with an older housing stock;
 # expenditure on roads is somewhat lower (density)?
 stargazer(lm.expHwy, lm.expSew, lm.expH20, type = "text", omit = c("Year4"),
-          dep.var.labels = c("Direct Expenditures"), 
-          column.labels = c("Regular Highways", "Sewerage", "Water Supply"),
-          covariate.labels = c("Median age of housing units", "Other government expenditures"))
+          dep.var.labels = c("Regular Highways", "Sewerage", "Water Supply"), #           column.labels = c("Regular Highways", "Sewerage", "Water Supply"),
+          covariate.labels = c("Median age of housing units", "Other government expenditures", "# of residential building permits"))
 
 # Share of spending on highway, sewerage, water utility current operation
 
