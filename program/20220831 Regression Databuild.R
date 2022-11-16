@@ -17,6 +17,11 @@ dt.cpi <- as.data.table(read_xlsx("crosswalks/CPI-U 1967 Dollars (1957-2022).xls
 
 dt.gov2fips <- readRDS("crosswalks/GOVS~FIPS.Rds")
 
+# TODO: fix this up?
+dt.tab <- as.data.table(read_xlsx("crosswalks/ASSLGF Summary Tabulations.xlsx", 
+                      sheet = "Post-2010", skip = 3))
+dt.tab <- dt.tab[Line %in% c(86, 87, 102, 103, 113, 114, 115, 116, 117, 118)]
+
 # Regression databuild ----
 
 # combine 1957-2002 and 2007-2012 county panels
@@ -51,21 +56,17 @@ dt[Amt == -11111 & !(Amt %in% c("X08", "Y08")), Amt := NA]
 
 # Merge in CPI and deflate to 1967 dollars
 dt <- merge(dt, dt.cpi[, .(Year, Annual)], by.x = c("Year4"), by.y = c("Year"), all.x = TRUE, all.y = FALSE)
-dt[, Amt1967 := Amt / (Annual / 100)]
+dt[, Amt1967 := Amt / (Annual / 100)][, Amt2012 := Amt / (Annual / 687.761)]
 
 dt[grepl("[EIJXYFGKLS][0-9]", Code), Cat1 := "Expenditure"] # TODO: reconcile this amount with raw subtotals (use import code)
 # TODO: reconcile the 2012 figures with Census report
 # https://www.census.gov/library/publications/2014/econ/g12-cg-alfin.html
 
-v.directexp <- c("E", "F", "G")
-v.reghwy <- paste0(v.directexp, 44)
-v.sewer <- paste0(v.directexp, 80)
-v.watersupply <- paste0(v.directexp, 91) # I91: interest on water utility debt 
-
-dt[Code %in% v.reghwy, Cat2 := "Regular Highway"]
-dt[Code %in% v.sewer, Cat2 := "Sewerage"]
-dt[Code %in% v.watersupply, Cat2 := "Water Supply"]
-dt.exp <- dt[Cat1 == "Expenditure"]
+dt[grepl("[EFG]4[45]", Code), Cat2 := "Highway"]
+dt[grepl("[EFG]80", Code), Cat2 := "Sewerage"]
+dt[grepl("[EFG]91", Code), Cat2 := "Water Supply"] # I91: interest on water utility debt
+dt[grepl("E..", Code), Cat3 := "Current Operations"]
+dt[grepl("[FG]..", Code), Cat3 := "Capital Outlay"]
 
 saveRDS(dt, file = "derived/County Area Expenditures (1957-2012).Rds")
 saveRDS(dt.countycov, "derived/County Covariates (1957-2012).Rds")

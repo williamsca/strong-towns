@@ -7,13 +7,16 @@ rm(list = ls())
 dir <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
 setwd(dir)
 
-pacman::p_load(data.table, ggplot2, stargazer, plm)
+pacman::p_load(data.table, ggplot2, stargazer, plm, writexl)
 
 dt <- readRDS("derived/County Area Expenditures (1957-2012).Rds") 
 dt.cov <- readRDS("derived/County Covariates (1957-2012).Rds")
 dt.cov <- dt.cov[!is.na(FIPS.Code.County)]
 
 dt.exp <- dt[Cat1 == "Expenditure"]
+dt.exp[is.na(Cat2), Cat2 := "Other Expenditure"]
+dt.exp[Cat2 == "Other Expenditure", Cat3 := "Other Expenditure"]
+dt.exp[Cat2 == "Other Expenditure" & is.na(Amt2012), Amt2012 := 0]
 
 # Number of approved residential building permits by county population
 ggplot(data = dt.cov[Year4 == 1992 & Population <= 1000000], mapping = aes(x = Population, y = Bldgs1)) +
@@ -21,14 +24,18 @@ ggplot(data = dt.cov[Year4 == 1992 & Population <= 1000000], mapping = aes(x = P
 
 # Regress per-capita infrastructure spending on age of housing stock, approved residential construction permits
 # TODO: distinguish capital spending from current operations. should respond differently to residential construction!
-dt.cat2exp <- dt.exp[, .(Amt1967 = sum(Amt1967)), by = .(Year4, ID, Cat1, Cat2)] # sum over finance codes
-dt.cat2exp <- dt.cat2exp[!is.na(Amt1967)]
-dt.cat2exp[is.na(Cat2), Cat2 := "Other Expenditure"]
+dt.cat3exp <- dt.exp[, .(Amt2012 = sum(Amt2012)), by = .(Year4, ID, Cat1, Cat2, Cat3)] # sum over finance codes
+dt.cat3exp <- dt.cat3exp[!is.na(Amt2012)]
 
-dt.cat2exp <- merge(dt.cat2exp, dt.cov, by = c("ID", "Year4"), all.x = TRUE)
-dt.cat2exp[, AmtPCap := Amt1967 * 1000 / Population]
 
-dt.cat2exp <- dcast(dt.cat2exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + medAge + Population + Bldgs1.5YT ~ Cat2, value.var = "AmtPCap")
+dt.cat3exp[, OtherExp := sum(Amt2012 * (Cat2 == "Other Expenditure")), by = .(Year4, ID)]
+
+dt.cat3exp <- merge(dt.cat3exp, dt.cov, by = c("ID", "Year4"), all.x = TRUE)
+dt.cat3exp[, AmtPCap := Amt2012 * 1000 / Population]
+
+dt.cat3exp <- dcast(dt.cat3exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + medAge + Population + Bldgs1.5YT + Cat2 ~ Cat3,
+                    value.var = "AmtPCap", fun.aggregate = sum)
+dt.cat3exp <- dcast(dt.cat3exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + medAge + Population + Bldgs1.5YT ~ Cat2, value.var = c("Current Operations", "Capital Outlay"))
 setnames(dt.cat2exp, c("Regular Highway", "Sewerage", "Water Supply", "Other Expenditure"),
          c("RegHwy", "Sewerage", "WaterSup", "OtherExp"))
 
@@ -45,17 +52,16 @@ stargazer(lm.expHwy, lm.expSew, lm.expH20, type = "text", omit = c("Year4"),
 # Share of spending on highway, sewerage, water utility current operation
 
 # Compute infrastructure spending as % of total and per-capita amounts ----
-dt.summary <- dt.exp[, .(Tot_Cat2 = sum(Amt)), by = .(Year4, Cat1, Cat2)] # sum over finance codes and counties
-dt.summary[, Tot_Cat1 := sum(Tot_Cat2), by = .(Year4)]
+dt.summary <- dt.exp[, .(Tot_Cat3 = sum(Amt2012)), by = .(Year4, Cat1, Cat2, Cat3)] # sum over finance codes and counties
+dt.summary[, Tot_Cat1 := sum(Tot_Cat3), by = .(Year4)]
 
-# TRUE --> totals are consistent
-all.equal(dt.summary[is.na(Cat2) & Year4 >= 1972, .(Year4, Cat1, Tot_Cat1)], 
-          dt[Cat1 == "Expenditure" & Year4 >= 1972, .(Tot_Cat1 = sum(Amt, na.rm = TRUE)), by = .(Year4, Cat1)]) 
 
-dt.summary <- merge(dt.summary, dt.pop[, .(Pop = sum(Population)), by = .(Year4)], by = "Year4")
-dt.summary[, `Expenditure Share (%)` := Tot_Cat2 / Tot_Cat1]
-dt.summary[, `Expenditures Per-Capita ($)` := Tot_Cat2 / Pop]
+dt.summary <- merge(dt.summary, dt.cov[, .(Pop = sum(Population)), by = .(Year4)], by = "Year4")
+dt.summary[, `Expenditure Share (%)` := Tot_Cat3 * 100 / Tot_Cat1]
+dt.summary[, `Expenditures Per-Capita ($)` := (Tot_Cat3 * 1000) / Pop]
 
+dt.out <- dcast(dt.summary[!is.na(Cat3) & !is.na(Cat2)], Year4 + Cat1 + Cat2 ~ Cat3, value.var = c("Expenditure Share (%)", "Expenditures Per-Capita ($)"))
+write_xlsx(dt.out, path = "output/20221116 Local Government Expenditures (1967-2012).xlsx")
 
 # SUPSERSEDED ----
 # Trends in direct infrastructure expenditures ----
