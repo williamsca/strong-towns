@@ -18,6 +18,15 @@ dt.exp[is.na(Cat2), Cat2 := "Other Expenditure"]
 dt.exp[Cat2 == "Other Expenditure", Cat3 := "Other Expenditure"]
 dt.exp[Cat2 == "Other Expenditure" & is.na(Amt2012), Amt2012 := 0]
 
+# Michigan
+dt.permits <- readRDS(file = "derived/County Residential Building Permits (1990-2021).Rds")
+dt.mi <- dt.permits[FIPS.Code.State %in% c("26", "39")]
+
+dt.mi <- dt.mi[, .(Bldgs1 = sum(Bldgs1)), by = .(Year4, FIPS.Code.State)]
+ggplot(data = dt.mi[Year4 <= 2000], mapping = aes(x = Year4, y = Bldgs1, group = FIPS.Code.State, color = FIPS.Code.State)) +
+  geom_point() +
+  geom_line(alpha = .5, linetype = "dashed")
+
 # Number of approved residential building permits by county population
 ggplot(data = dt.cov[Year4 == 1992 & Population <= 1000000], mapping = aes(x = Population, y = Bldgs1)) +
   geom_point(alpha = .3)
