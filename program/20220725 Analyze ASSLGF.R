@@ -36,17 +36,38 @@ ggplot(data = dt.cov[Year4 == 1992 & Population <= 1000000], mapping = aes(x = P
 dt.cat3exp <- dt.exp[, .(Amt2012 = sum(Amt2012)), by = .(Year4, ID, Cat1, Cat2, Cat3)] # sum over finance codes
 dt.cat3exp <- dt.cat3exp[!is.na(Amt2012)]
 
-
 dt.cat3exp[, OtherExp := sum(Amt2012 * (Cat2 == "Other Expenditure")), by = .(Year4, ID)]
 
 dt.cat3exp <- merge(dt.cat3exp, dt.cov, by = c("ID", "Year4"), all.x = TRUE)
 dt.cat3exp[, AmtPCap := Amt2012 * 1000 / Population]
+dt.cat3exp[, otherExpPCap := OtherExp * 1000 / Population]
 
-dt.cat3exp <- dcast(dt.cat3exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + medAge + Population + Bldgs1.5YT + Cat2 ~ Cat3,
+dt.cat3exp[, Cat3 := gsub(" ", "_", Cat3)]
+dt.cat3exp[, Cat2 := gsub(" ", "_", Cat2)]
+dt.cat3exp <- dcast(dt.cat3exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + 
+                      medAge + Population + Bldgs1.5YT + Cat2 + otherExpPCap ~ Cat3,
                     value.var = "AmtPCap", fun.aggregate = sum)
-dt.cat3exp <- dcast(dt.cat3exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + medAge + Population + Bldgs1.5YT ~ Cat2, value.var = c("Current Operations", "Capital Outlay"))
-setnames(dt.cat2exp, c("Regular Highway", "Sewerage", "Water Supply", "Other Expenditure"),
-         c("RegHwy", "Sewerage", "WaterSup", "OtherExp"))
+
+dt.cat3exp[, Other_Expenditure := NULL]
+dt.cat3exp <- dt.cat3exp[Cat2 != "Other_Expenditure"]
+
+dt.cat3exp <- dcast(dt.cat3exp, ID + Year4 + FIPS.Code.State + FIPS.Code.County + Name.x + 
+                      medAge + Population + Bldgs1.5YT + otherExpPCap ~ Cat2, value.var = c("Current_Operations", "Capital_Outlay"))
+
+lhs <- "medAge + otherExpPCap + Bldgs1.5YT"
+lm.currentHwy <- plm(formula(paste0("Current_Operations_Highway ~ ", lhs)) , data = dt.cat3exp, index = c("ID", "Year4"), model = "within")
+lm.capHwy <- plm(formula(paste0("Capital_Outlay_Highway ~ ", lhs)), data = dt.cat3exp, index = c("ID", "Year4"), model = "within")
+
+lm.currentSew <- plm(formula(paste0("Current_Operations_Sewerage ~ ", lhs)), data = dt.cat3exp, index = c("ID", "Year4"), model = "within")
+lm.capSew <- plm(formula(paste0("Capital_Outlay_Sewerage ~ ", lhs)), data = dt.cat3exp, index = c("ID", "Year4"), model = "within")
+
+lm.currentWS <- plm(formula(paste0("Current_Operations_Water_Supply ~ ", lhs)), data = dt.cat3exp, index = c("ID", "Year4"), model = "within")
+lm.capWS <- plm(formula(paste0("Capital_Outlay_Water_Supply ~ ", lhs)), data = dt.cat3exp, index = c("ID", "Year4"), model = "within")
+
+stargazer(lm.currentHwy, lm.capHwy, type = "text")
+stargazer(lm.currentSew, lm.capSew, type = "text")
+stargazer(lm.currentWS, lm.capWS, type = "text")
+
 
 lm.expHwy <- plm(RegHwy ~ medAge + OtherExp + Bldgs1.5YT, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
 lm.expSew <- plm(Sewerage ~ medAge + OtherExp + Bldgs1.5YT, data = dt.cat2exp, index = c("ID", "Year4"), model = "within")
