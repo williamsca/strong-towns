@@ -83,15 +83,57 @@ stargazer(lm.expHwy, lm.expSew, lm.expH20, type = "text", omit = c("Year4"),
 
 # Compute infrastructure spending as % of total and per-capita amounts ----
 dt.summary <- dt.exp[, .(Tot_Cat3 = sum(Amt2012)), by = .(Year4, Cat1, Cat2, Cat3)] # sum over finance codes and counties
-dt.summary[, Tot_Cat1 := sum(Tot_Cat3), by = .(Year4)]
-
+dt.summary[, Tot_Cat2 := sum(Tot_Cat3, na.rm = TRUE), by = .(Year4, Cat2)]
+dt.summary[, Tot_Cat1 := sum(Tot_Cat3, na.rm = TRUE), by = .(Year4)]
 
 dt.summary <- merge(dt.summary, dt.cov[, .(Pop = sum(Population)), by = .(Year4)], by = "Year4")
-dt.summary[, `Expenditure Share (%)` := Tot_Cat3 * 100 / Tot_Cat1]
-dt.summary[, `Expenditures Per-Capita ($)` := (Tot_Cat3 * 1000) / Pop]
+dt.summary[, `CurOpShare` := Tot_Cat3 * 100 / Tot_Cat1]
+dt.summary[, `CurOpPC` := (Tot_Cat3 * 1000) / Pop]
+dt.summary[, `ExpShare` := Tot_Cat2 * 100 / Tot_Cat1]
+dt.summary[, `ExpPC` := (Tot_Cat2 * 1000) / Pop]
 
-dt.out <- dcast(dt.summary[!is.na(Cat3) & !is.na(Cat2)], Year4 + Cat1 + Cat2 ~ Cat3, value.var = c("Expenditure Share (%)", "Expenditures Per-Capita ($)"))
-write_xlsx(dt.out, path = "output/20221116 Local Government Expenditures (1967-2012).xlsx")
+ggplot(data = dt.summary[Year4 >= 1972 & Cat3 == "Current Operations"], aes(x = Year4)) +
+  geom_point(mapping = aes(y = `CurOpPC`, color = Cat2), size = 3) +
+  geom_line(mapping = aes(y = `CurOpPC`, color = Cat2), linetype = "dashed") +
+  scale_y_continuous(limits = c(0, 130), breaks = seq(0, 125, 25)) +
+  scale_x_continuous(limits = c(1972, 2012), breaks = seq(1972, 2012, 5)) +
+  labs(color = "O&M", # title = "Local Government O&M Expenditures", subtitle = "1972-2012", 
+       x = "", y = "Spending Per-Capita ($)", 
+       caption = "Note: Chart shows current operations expenditures in 2012 dollars based on urban consumer CPI.
+Source: Annual Survey of State and Local Governments.") +
+  theme_bw() +
+  theme(plot.caption = element_text(hjust = 0), plot.background = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(), axis.line = element_line(color='black'))
+ggsave("output/20221128 Local Govt O&M Expenditures.png")
+
+ggplot(data = dt.summary[Year4 >= 1972 & Cat3 == "Capital Outlay"], aes(x = Year4)) +
+  geom_point(mapping = aes(y = `CurOpPC`, color = Cat2, group = Cat3), shape = "triangle", size = 3) +
+  geom_line(mapping = aes(y = `CurOpPC`, color = Cat2), linetype = "dashed") +
+  geom_point(mapping = aes(y = `CurOpPC`, color = Cat2), alpha = .5, size = 3,
+             data = dt.summary[Year4 >= 1972 & Cat3 == "Current Operations"]) +
+  geom_line(mapping = aes(y = `CurOpPC`, color = Cat2), linetype = "dashed", alpha = .5,
+            data = dt.summary[Year4 >= 1972 & Cat3 == "Current Operations"]) +
+  
+  scale_y_continuous(limits = c(0, 130), breaks = seq(0, 125, 25)) +
+  scale_x_continuous(limits = c(1972, 2012), breaks = seq(1972, 2012, 5)) +
+  labs(color = "Capital Outlays", # title = "Local Government O&M Expenditures", subtitle = "1972-2012", 
+       x = "", y = "Spending Per-Capita ($)", 
+       caption = "Note: Chart shows current operations expenditures in 2012 dollars based on urban consumer CPI.
+Source: Annual Survey of State and Local Governments.") +
+  theme_bw() +
+  theme(plot.caption = element_text(hjust = 0), plot.background = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(), axis.line = element_line(color='black'))
+ggsave("output/20221128 Local Govt Capital Expenditures.png")
+
+ggplot(data = dt.summary[Year4 >= 1972 & Cat3 == "Current Operations"], aes(x = Year4)) +
+  geom_point(mapping = aes(y = `CurOpShare`, color = Cat2)) +
+  geom_line(mapping = aes(y = `CurOpShare`, color = Cat2), linetype = "dashed") +
+  geom_point(mapping = aes(y = ExpShare, color = Cat2))
+
+# dt.out <- dcast(dt.summary[!is.na(Cat3) & !is.na(Cat2)], Year4 + Cat1 + Cat2 ~ Cat3, value.var = c("Expenditure Share (%)", "Expenditures Per-Capita ($)"))
+# write_xlsx(dt.out, path = "output/20221116 Local Government Expenditures (1967-2012).xlsx")
 
 # SUPSERSEDED ----
 # Trends in direct infrastructure expenditures ----
