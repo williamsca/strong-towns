@@ -62,6 +62,9 @@ State tax and expenditure limits (TELs):
 
 https://www.census.gov/construction/bps/
 
+** Community Development Block Grants (VA)
+- Overview PPT: https://www.vaawwa.org/Documents/en-us/0e406185-33b7-4d1e-b374-a520f2c19b75/1
+
 ** Data from: A century of sprawl in the United States
 
 Link: https://datadryad.org/stash/dataset/doi:10.5061/dryad.3k502
