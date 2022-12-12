@@ -53,6 +53,9 @@ County shapefiles since 1990:
 
 VA: http://www.apa.virginia.gov/APA_Reports/LG_ComparativeReports.aspx
 
+** CDBG Allocations (HUD)
+2019: https://www.hud.gov/program_offices/comm_planning/budget/fy19/
+
 ** Property Tax Database (Lincoln Institute)
 
 State tax and expenditure limits (TELs):
